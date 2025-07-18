@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Version Analysis Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 600;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .file-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .file-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .file-details {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .table-subtitle {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        /* Column width allocations for better space distribution */
+        th:nth-child(1), td:nth-child(1) { width: 12%; } /* Java Version */
+        th:nth-child(2), td:nth-child(2) { width: 16%; } /* Runtime Version */
+        th:nth-child(3), td:nth-child(3) { width: 16%; } /* VM Version */
+        th:nth-child(4), td:nth-child(4) { width: 14%; } /* Vendor */
+        th:nth-child(5), td:nth-child(5) { width: 14%; } /* VM Vendor */
+        th:nth-child(6), td:nth-child(6) { width: 14%; } /* JDK Age Check */
+        th:nth-child(7), td:nth-child(7) { width: 14%; } /* Commercial License */
+
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        th {
+            background: #fafbfc;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        tr:hover {
+            background-color: #f8f9ff;
+        }
+
+        .version-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .vendor-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .warning-badge {
+            background: #fff3cd;
+            color: #856404;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+            border: 1px solid #ffeaa7;
+        }
+
+        .danger-badge {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success-badge {
+            background: #d4edda;
+            color: #155724;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+            border: 1px solid #c3e6cb;
+        }
+
+        .very-old-badge {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+            border: 1px solid #f5c6cb;
+        }
+
+        .old-badge {
+            background: #fff3cd;
+            color: #856404;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+            border: 1px solid #ffeaa7;
+        }
+
+        .ok-badge {
+            background: #d4edda;
+            color: #155724;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+            border: 1px solid #c3e6cb;
+        }
+
+        .license-info {
+            position: relative;
+            display: inline-block;
+        }
+
+        .license-tooltip {
+            visibility: hidden;
+            width: 300px;
+            max-width: 90vw;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            right: 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8em;
+            line-height: 1.3;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .license-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            right: 20px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .license-info:hover .license-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .empty-subtext {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                gap: 20px;
+            }
+
+            .stat-number {
+                font-size: 2em;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            th, td {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Analysis Results</h1>
+            <p class="subtitle">Java Version Distribution Analysis</p>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number">{totalFiles}</span>
+                    <span class="stat-label">Total Files</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{distinctCount}</span>
+                    <span class="stat-label">Distinct Versions</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{outdatedCount}</span>
+                    <span class="stat-label">Outdated Versions</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{paidCount}</span>
+                    <span class="stat-label">Paid Versions</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="file-info">
+                {!<div class="file-name">📁 {fileName}</div>!}
+                <div class="file-details">Processed {totalFiles} properties files and found {distinctCount} distinct Java versions</div>
+            </div>
+
+            {#if versions.isEmpty}
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+                    <div class="empty-text">No Java version information found</div>
+                    <div class="empty-subtext">The uploaded ZIP file doesn't contain any valid Java runtime properties files</div>
+                </div>
+            {#else}
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="table-title">Distinct Java Versions</div>
+                        <div class="table-subtitle">Unique Java runtime configurations found in your archive</div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Java Version</th>
+                                <th>Runtime Version</th>
+                                <th>VM Version</th>
+                                <th>Vendor</th>
+                                <th>VM Vendor</th>
+                                <th>Version Age</th>
+                                <th>Commercial License</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#for version in versions}
+                                <tr>
+                                    <td>
+                                        <span class="version-badge">{version.javaVersion ?: 'N/A'}</span>
+                                    </td>
+                                    <td>{version.javaRuntimeVersion ?: 'N/A'}</td>
+                                    <td>{version.javaVmVersion ?: 'N/A'}</td>
+                                    <td>
+                                        {#if version.javaVendor}
+                                            <span class="vendor-tag">{version.javaVendor}</span>
+                                        {#else}
+                                            N/A
+                                        {/if}
+                                    </td>
+                                    <td>{version.javaVmVendor ?: 'N/A'}</td>
+                                    <td>
+                                        {#switch version.versionAge}
+                                            {#case VERY_OLD}
+                                                <span class="very-old-badge">🔴&nbsp;Very&nbsp;Old&nbsp;(&lt;11)</span>
+                                            {#case OLD}
+                                                <span class="old-badge">🟡&nbsp;Old&nbsp;(11-20)</span>
+                                            {#case OK}
+                                                <span class="ok-badge">🟢&nbsp;OK&nbsp;(21+)</span>
+                                        {/switch}
+                                    </td>
+                                    <td>
+                                        {#if version.requiresCommercialLicense}
+                                            <div class="license-info">
+                                                <span class="warning-badge">💰&nbsp;Commercial&nbsp;License&nbsp;❓</span>
+                                                <div class="license-tooltip">{version.licenseExplanation}</div>
+                                            </div>
+                                        {#else}
+                                            <span class="success-badge">✅&nbsp;Free</span>
+                                        {/if}
+                                    </td>
+                                </tr>
+                            {/for}
+                        </tbody>
+                    </table>
+                </div>
+            {/if}
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="/" class="back-btn">📤 Upload Another File</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

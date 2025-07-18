@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Version Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .upload-area {
+            border: 3px dashed #ddd;
+            border-radius: 15px;
+            padding: 60px 20px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background-color: #f0f2ff;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            color: #ddd;
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            color: #667eea;
+        }
+
+        .upload-text {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .file-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            display: none;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .loading {
+            display: none;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .help-section {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .help-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        .help-content {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .help-item {
+            margin-bottom: 30px;
+        }
+
+        .help-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .help-item h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            display: block;
+            margin: 5px 0;
+        }
+
+        .code-container {
+            position: relative;
+            background: #2d3748;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8em;
+            z-index: 1;
+        }
+
+        .copy-btn:hover {
+            background: #5a67d8;
+        }
+
+        .java-code {
+            color: #e2e8f0;
+            padding: 15px;
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 5px 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 15px;
+        }
+
+        .collapsible-header:hover h3 {
+            color: #5a67d8;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            color: #667eea;
+            transition: transform 0.3s ease;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .toggle-btn:hover {
+            background-color: #f0f2ff;
+        }
+
+        .toggle-btn.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .collapsible-content.expanded {
+            max-height: 5000px;
+            overflow-y: auto;
+            transition: max-height 0.5s ease-in;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Java Version Analyzer</h1>
+    <p class="subtitle">Upload a ZIP archive containing Java runtime properties files</p>
+
+    <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+        <div class="upload-area" id="upload-area">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">Click to select or drag &amp; drop your ZIP file</div>
+            <div class="upload-subtext">Only ZIP files are supported</div>
+            <input type="file" id="file-input" name="file" accept=".zip" required>
+        </div>
+        <input type="hidden" name="{inject:csrf.parameterName}" value="{inject:csrf.token}"/>
+        <div class="file-info" id="file-info">
+            <div class="file-name" id="file-name"></div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submit-btn">Analyze Java Versions</button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            Processing your file...
+        </div>
+    </form>
+
+
+    <div class="help-section">
+        <h2>Step-by-Step Guide: Assembling Production Archive</h2>
+        <div class="help-content">
+            <div class="help-item">
+                <div class="collapsible-header" onclick="toggleStep1()">
+                    <h3>Step 1: Collect Java Runtime Info from Production Servers</h3>
+                    <button class="toggle-btn collapsed" id="step1-toggle-btn">▼</button>
+                </div>
+                <div class="collapsible-content" id="step1-section">
+                    <p style="margin-bottom: 15px; color: #666;">Run JavaRuntimeInfo.java on every server for every Java installation in production. Use random file names to avoid conflicts.</p>
+
+                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">For each production server:</h4>
+                    <div class="code-block">
+                        <code># Generate a random filename</code>
+                        <code>RANDOM_NAME="java-info-$(hostname)-$(date +%s)-$RANDOM.properties"</code>
+                        <code></code>
+                        <code># Compile and run JavaRuntimeInfo</code>
+                        <code>$JAVA_HOME/bin/javac JavaRuntimeInfo.java</code>
+                        <code>$JAVA_HOME/bin/java JavaRuntimeInfo --out="$RANDOM_NAME"</code>
+                    </div>
+
+                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">For Docker containers:</h4>
+                    <div class="code-block">
+                        <code># Generate random filename</code>
+                        <code>RANDOM_NAME="java-info-container-$(date +%s)-$RANDOM.properties"</code>
+                        <code></code>
+                        <code># Run in container</code>
+                        <code>docker run -v ./JavaRuntimeInfo.java:/JavaRuntimeInfo.java --rm -it &lt;docker_tag&gt; bash -c \</code>
+                        <code>  "cd / && javac JavaRuntimeInfo.java && java JavaRuntimeInfo --out=$RANDOM_NAME && cat $RANDOM_NAME" > "$RANDOM_NAME"</code>
+                    </div>
+
+                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">Automated collection script example:</h4>
+                    <div class="code-block">
+                        <code>#!/bin/bash</code>
+                        <code>mkdir -p java-runtime-collection</code>
+                        <code>cd java-runtime-collection</code>
+                        <code></code>
+                        <code># For each Java installation</code>
+                        <code>for JAVA_HOME in /usr/lib/jvm/* /opt/java/* /usr/java/*; do</code>
+                        <code>  if [ -x "$JAVA_HOME/bin/java" ]; then</code>
+                        <code>    RANDOM_NAME="java-info-$(basename $JAVA_HOME)-$(hostname)-$(date +%s)-$RANDOM.properties"</code>
+                        <code>    $JAVA_HOME/bin/javac ../JavaRuntimeInfo.java</code>
+                        <code>    $JAVA_HOME/bin/java -cp .. JavaRuntimeInfo --out="$RANDOM_NAME"</code>
+                        <code>  fi</code>
+                        <code>done</code>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <div class="collapsible-header" onclick="toggleJavaCode()">
+                            <h4 style="color: #667eea; margin: 0; font-size: 1.1em;">JavaRuntimeInfo.java Source Code:</h4>
+                            <button class="toggle-btn collapsed" id="toggle-btn">▼</button>
+                        </div>
+                        <div class="collapsible-content" id="java-code-section">
+                            <div class="code-container">
+                                <button class="copy-btn" onclick="copyJavaCode()">Copy</button>
+                                <pre class="java-code" id="java-code">import java.io.*;
+import java.util.*;
+
+public class JavaRuntimeInfo {
+    public static void main(String[] args) {
+        String outFile = null;
+        for (String arg : args) {
+            if (arg.startsWith("--out=")) {
+                outFile = arg.substring(6);
+            }
+        }
+
+        String[] keys = {
+            "java.runtime.version",
+            "java.vm.specification.version",
+            "java.vendor",
+            "java.vendor.version",
+            "java.version",
+            "java.vm.version",
+            "java.vm.vendor"
+        };
+        Properties props = new Properties();
+        for (String key : keys) {
+            String val = System.getProperty(key);
+            if (val == null) {
+                props.setProperty(key, "unavailable");
+            } else {
+                props.setProperty(key, val);
+            }
+        }
+
+        // Output to stdout
+        try {
+            props.store(new OutputStreamWriter(System.out, "ISO-8859-1"),
+                        "Java runtime properties");
+        } catch (IOException e) {
+            // Shouldn't happen with stdout
+        }
+
+        // Write to file if requested
+        if (outFile != null) {
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(outFile);
+                props.store(fos, "Java runtime properties");
+                System.err.println("Info: saved properties to " + outFile);
+            } finally {
+                try { 
+                    if (fos != null) fos.close(); 
+                } catch (IOException ignore) {
+                    // ignore
+                }
+            }
+        }
+    }
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="help-item">
+                <div class="collapsible-header" onclick="toggleStep2()">
+                    <h3>Step 2: Create ZIP Archive</h3>
+                    <button class="toggle-btn collapsed" id="step2-toggle-btn">▼</button>
+                </div>
+                <div class="collapsible-content" id="step2-section">
+                    <p style="margin-bottom: 15px; color: #666;">Collect all .properties files from all servers and create a single ZIP archive.</p>
+
+                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">Basic ZIP creation:</h4>
+                    <div class="code-block">
+                        <code># Create archive with all properties files</code>
+                        <code>zip -r java-runtime-archive-$(date +%Y%m%d-%H%M%S).zip *.properties</code>
+                    </div>
+
+                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">Advanced: Organize by server/environment:</h4>
+                    <div class="code-block">
+                        <code># Create directory structure</code>
+                        <code>mkdir -p archive-staging/production archive-staging/staging archive-staging/development</code>
+                        <code></code>
+                        <code># Move files to appropriate directories</code>
+                        <code>mv *prod*.properties archive-staging/production/</code>
+                        <code>mv *staging*.properties archive-staging/staging/</code>
+                        <code>mv *dev*.properties archive-staging/development/</code>
+                        <code></code>
+                        <code># Create organized archive</code>
+                        <code>cd archive-staging</code>
+                        <code>zip -r ../java-runtime-archive-$(date +%Y%m%d-%H%M%S).zip .</code>
+                    </div>
+
+                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">Verification:</h4>
+                    <div class="code-block">
+                        <code># List contents of the archive</code>
+                        <code>unzip -l java-runtime-archive-*.zip</code>
+                        <code></code>
+                        <code># Test archive integrity</code>
+                        <code>unzip -t java-runtime-archive-*.zip</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="help-item">
+                <div class="collapsible-header" onclick="toggleStep3()">
+                    <h3>Step 3: Upload Archive to Service</h3>
+                    <button class="toggle-btn collapsed" id="step3-toggle-btn">▼</button>
+                </div>
+                <div class="collapsible-content" id="step3-section">
+                    <p style="margin-bottom: 15px; color: #666;">Open this page and upload your ZIP archive using the form above.</p>
+
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #666;">1. Use the drag & drop area above to select your ZIP file</p>
+                        <p style="margin: 5px 0 0 0; color: #666;">2. Click "Analyze Java Versions" to upload and process</p>
+                        <p style="margin: 5px 0 0 0; color: #666;">3. Review the analysis results</p>
+                    </div>
+
+                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">Best Practices:</h4>
+                    <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                        <p style="margin: 0 0 10px 0; color: #666;">• Include server/environment information in filenames</p>
+                        <p style="margin: 0 0 10px 0; color: #666;">• Keep archives under 100MB for optimal processing</p>
+                        <p style="margin: 0 0 10px 0; color: #666;">• Document the collection date and scope</p>
+                        <p style="margin: 0; color: #666;">• Store archives for compliance and historical analysis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const uploadArea = document.getElementById('upload-area');
+    const fileInput = document.getElementById('file-input');
+    const fileInfo = document.getElementById('file-info');
+    const fileName = document.getElementById('file-name');
+    const submitBtn = document.getElementById('submit-btn');
+    const uploadForm = document.getElementById('upload-form');
+    const loading = document.getElementById('loading');
+
+    // Click to upload
+    uploadArea.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            handleFileSelect();
+        }
+    });
+
+    // File selection
+    fileInput.addEventListener('change', handleFileSelect);
+
+    function handleFileSelect() {
+        const file = fileInput.files[0];
+        if (file) {
+            fileName.textContent = file.name;
+            fileInfo.style.display = 'block';
+            submitBtn.style.display = 'inline-block';
+        }
+    }
+
+    // Form submission
+    uploadForm.addEventListener('submit', () => {
+        submitBtn.style.display = 'none';
+        loading.style.display = 'block';
+    });
+
+    // Copy Java code function
+    function copyJavaCode() {
+        const javaCode = document.getElementById('java-code');
+        const textArea = document.createElement('textarea');
+        textArea.value = javaCode.textContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        const copyBtn = document.querySelector('.copy-btn');
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => {
+            copyBtn.textContent = originalText;
+        }, 2000);
+    }
+
+    // Toggle Java code section
+    function toggleJavaCode() {
+        const codeSection = document.getElementById('java-code-section');
+        const toggleBtn = document.getElementById('toggle-btn');
+
+        if (codeSection.classList.contains('expanded')) {
+            codeSection.classList.remove('expanded');
+            toggleBtn.classList.add('collapsed');
+            toggleBtn.textContent = '▼';
+        } else {
+            codeSection.classList.add('expanded');
+            toggleBtn.classList.remove('collapsed');
+            toggleBtn.textContent = '▲';
+        }
+    }
+
+    // Toggle Step 1 section
+    function toggleStep1() {
+        const section = document.getElementById('step1-section');
+        const toggleBtn = document.getElementById('step1-toggle-btn');
+
+        if (section.classList.contains('expanded')) {
+            section.classList.remove('expanded');
+            toggleBtn.classList.add('collapsed');
+            toggleBtn.textContent = '▼';
+        } else {
+            section.classList.add('expanded');
+            toggleBtn.classList.remove('collapsed');
+            toggleBtn.textContent = '▲';
+        }
+    }
+
+    // Toggle Step 2 section
+    function toggleStep2() {
+        const section = document.getElementById('step2-section');
+        const toggleBtn = document.getElementById('step2-toggle-btn');
+
+        if (section.classList.contains('expanded')) {
+            section.classList.remove('expanded');
+            toggleBtn.classList.add('collapsed');
+            toggleBtn.textContent = '▼';
+        } else {
+            section.classList.add('expanded');
+            toggleBtn.classList.remove('collapsed');
+            toggleBtn.textContent = '▲';
+        }
+    }
+
+    // Toggle Step 3 section
+    function toggleStep3() {
+        const section = document.getElementById('step3-section');
+        const toggleBtn = document.getElementById('step3-toggle-btn');
+
+        if (section.classList.contains('expanded')) {
+            section.classList.remove('expanded');
+            toggleBtn.classList.add('collapsed');
+            toggleBtn.textContent = '▼';
+        } else {
+            section.classList.add('expanded');
+            toggleBtn.classList.remove('collapsed');
+            toggleBtn.textContent = '▲';
+        }
+    }
+</script>
+</body>
+</html>
