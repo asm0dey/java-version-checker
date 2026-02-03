@@ -43,7 +43,7 @@ public class JavaVersionResourceTest {
                 .when().get("/")
                 .then().statusCode(200)
                 .extract().cookie("csrf-token");
-        // Test upload without file should return 400
+        // Test upload without file should return 415
         given()
                 .cookie("csrf-token", csrfToken)
                 .formParam("csrf-token", csrfToken)
@@ -51,6 +51,33 @@ public class JavaVersionResourceTest {
                 .post("/upload")
                 .then()
                 .statusCode(415);
+    }
+
+    @Test
+    public void testPropertiesFileUpload() {
+        String properties = """
+                java.version=21.0.1
+                java.vendor=Eclipse Adoptium
+                java.vm.name=OpenJDK 64-Bit Server VM
+                java.runtime.version=21.0.1+12-LTS
+                """;
+        String csrfToken = given()
+                .when().get("/")
+                .then().statusCode(200)
+                .extract().cookie("csrf-token");
+
+        given()
+                .cookie("csrf-token", csrfToken)
+                .formParam("csrf-token", csrfToken)
+                .multiPart("file", "java.version.properties", properties.getBytes(), "text/plain")
+                .when()
+                .post("/upload")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.HTML)
+                .body(containsString("Java Version Analysis Results"))
+                .body(containsString("21.0.1"))
+                .body(containsString("Eclipse Adoptium"));
     }
 
     private byte[] createTestZipFile() throws IOException {

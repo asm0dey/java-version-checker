@@ -286,14 +286,14 @@
 <body>
 <div class="container">
     <h1>Java Version Analyzer</h1>
-    <p class="subtitle">Upload a ZIP archive containing Java runtime properties files</p>
+    <p class="subtitle">Upload a ZIP archive or a properties file containing Java runtime properties</p>
 
     <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
         <div class="upload-area" id="upload-area">
             <div class="upload-icon">📁</div>
-            <div class="upload-text">Click to select or drag &amp; drop your ZIP file</div>
-            <div class="upload-subtext">Only ZIP files are supported</div>
-            <input type="file" id="file-input" name="file" accept=".zip" required>
+            <div class="upload-text">Click to select or drag &amp; drop your ZIP or properties file</div>
+            <div class="upload-subtext">ZIP and .properties files are supported</div>
+            <input type="file" id="file-input" name="file" accept=".zip,.properties" required>
         </div>
         <input type="hidden" name="{inject:csrf.parameterName}" value="{inject:csrf.token}"/>
         <div class="file-info" id="file-info">

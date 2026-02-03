@@ -36,19 +36,32 @@ public class JavaVersionResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance upload(@FormParam("file") FileUpload fileUpload) throws IOException {
-        ZipSecureFile.setMinInflateRatio(.01);
-        ZipSecureFile.setMaxEntrySize(1024);
-        try (ZipSecureFile zipSecureFile = new ZipSecureFile(fileUpload.uploadedFile().toFile());) {
-            var allVersions = allVersions(zipSecureFile);
-            List<JavaVersionInfo> distinctVersions = JavaVersionService.getDistinctVersions(allVersions);
+        List<JavaVersionInfo> allVersions;
+        String fileName = fileUpload.fileName();
 
-            // Calculate counts for summary
-            int outdatedCount = (int) distinctVersions.stream().filter(JavaVersionInfo::isOlderThanJdk8).count();
-            int paidCount = (int) distinctVersions.stream().filter(JavaVersionInfo::requiresCommercialLicense).count();
-
-            return Templates.results(distinctVersions, allVersions.size(), distinctVersions.size(), outdatedCount, paidCount);
-
+        if (fileName != null && fileName.toLowerCase().endsWith(".properties")) {
+            allVersions = new ArrayList<>();
+            try (var is = java.nio.file.Files.newInputStream(fileUpload.uploadedFile())) {
+                JavaVersionInfo info = JavaVersionService.parsePropertiesFile(is, fileName);
+                if (info != null) {
+                    allVersions.add(info);
+                }
+            }
+        } else {
+            ZipSecureFile.setMinInflateRatio(.01);
+            ZipSecureFile.setMaxEntrySize(1024);
+            try (ZipSecureFile zipSecureFile = new ZipSecureFile(fileUpload.uploadedFile().toFile())) {
+                allVersions = allVersions(zipSecureFile);
+            }
         }
+
+        List<JavaVersionInfo> distinctVersions = JavaVersionService.getDistinctVersions(allVersions);
+
+        // Calculate counts for summary
+        int outdatedCount = (int) distinctVersions.stream().filter(JavaVersionInfo::isOlderThanJdk8).count();
+        int paidCount = (int) distinctVersions.stream().filter(JavaVersionInfo::requiresCommercialLicense).count();
+
+        return Templates.results(distinctVersions, allVersions.size(), distinctVersions.size(), outdatedCount, paidCount);
     }
 
     private List<JavaVersionInfo> allVersions(ZipSecureFile zipSecureFile) throws IOException {
