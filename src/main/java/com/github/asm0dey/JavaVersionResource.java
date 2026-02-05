@@ -4,14 +4,13 @@ import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.poi.openxml4j.util.ZipSecureFile;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.model.FileHeader;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 @Path("/")
@@ -39,20 +38,22 @@ public class JavaVersionResource {
         List<JavaVersionInfo> allVersions;
         String fileName = fileUpload.fileName();
 
-        if (fileName != null && fileName.toLowerCase().endsWith(".properties")) {
-            allVersions = new ArrayList<>();
-            try (var is = java.nio.file.Files.newInputStream(fileUpload.uploadedFile())) {
-                JavaVersionInfo info = JavaVersionService.parsePropertiesFile(is, fileName);
-                if (info != null) {
-                    allVersions.add(info);
+        try {
+            if (fileName != null && fileName.toLowerCase().endsWith(".properties")) {
+                allVersions = new ArrayList<>();
+                try (var is = java.nio.file.Files.newInputStream(fileUpload.uploadedFile())) {
+                    JavaVersionInfo info = JavaVersionService.parsePropertiesFile(is, fileName);
+                    if (info != null) {
+                        allVersions.add(info);
+                    }
+                }
+            } else {
+                try (ZipFile zipFile = new ZipFile(fileUpload.uploadedFile().toFile())) {
+                    allVersions = allVersions(zipFile);
                 }
             }
-        } else {
-            ZipSecureFile.setMinInflateRatio(.01);
-            ZipSecureFile.setMaxEntrySize(1024);
-            try (ZipSecureFile zipSecureFile = new ZipSecureFile(fileUpload.uploadedFile().toFile())) {
-                allVersions = allVersions(zipSecureFile);
-            }
+        } catch (ZipBombException e) {
+            throw new BadRequestException("Zip bomb detected: " + e.getMessage());
         }
 
         List<JavaVersionInfo> distinctVersions = JavaVersionService.getDistinctVersions(allVersions);
@@ -64,21 +65,37 @@ public class JavaVersionResource {
         return Templates.results(distinctVersions, allVersions.size(), distinctVersions.size(), outdatedCount, paidCount);
     }
 
-    private List<JavaVersionInfo> allVersions(ZipSecureFile zipSecureFile) throws IOException {
+    private List<JavaVersionInfo> allVersions(ZipFile zipFile) throws IOException {
         List<JavaVersionInfo> versions = new ArrayList<>();
-        for (var entry : new ZipArchiveEntryIterable(zipSecureFile))
-            if (!entry.isDirectory() && entry.getName().endsWith(".properties"))
-                try (var zis = zipSecureFile.getInputStream(entry)) {
-                    var versionInfo = JavaVersionService.parsePropertiesFile(zis, entry.getName());
+        for (FileHeader header : zipFile.getFileHeaders()) {
+            if (!header.isDirectory() && header.getFileName().endsWith(".properties")) {
+                validateEntry(header);
+                try (var zis = zipFile.getInputStream(header)) {
+                    var versionInfo = JavaVersionService.parsePropertiesFile(zis, header.getFileName());
                     if (versionInfo != null) versions.add(versionInfo);
                 }
+            }
+        }
         return versions;
     }
 
-    private record ZipArchiveEntryIterable(ZipSecureFile zipSecureFile) implements Iterable<ZipArchiveEntry> {
-        @Override
-        public Iterator<ZipArchiveEntry> iterator() {
-            return zipSecureFile.getEntries().asIterator();
+    private void validateEntry(FileHeader entry) {
+        long uncompressedSize = entry.getUncompressedSize();
+        long compressedSize = entry.getCompressedSize();
+        if (uncompressedSize > 100 * 1024 * 1024) { // 100MB max
+            throw new ZipBombException("Entry too large: " + entry.getFileName());
+        }
+        if (compressedSize > 0) {
+            double ratio = (double) uncompressedSize / compressedSize;
+            if (ratio > 100) { // Max ratio 100
+                throw new ZipBombException("Compression ratio too high: " + ratio + " for " + entry.getFileName());
+            }
+        }
+    }
+
+    private static class ZipBombException extends RuntimeException {
+        public ZipBombException(String message) {
+            super(message);
         }
     }
 }

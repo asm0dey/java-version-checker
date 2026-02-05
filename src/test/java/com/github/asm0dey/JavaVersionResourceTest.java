@@ -112,4 +112,34 @@ public class JavaVersionResourceTest {
         return baos.toByteArray();
     }
 
+    @Test
+    public void testZipBombTooLarge() throws IOException {
+        byte[] zipData = createLargeZipFile();
+        String csrfToken = given()
+                .when().get("/")
+                .then().statusCode(200)
+                .extract().cookie("csrf-token");
+
+        given()
+                .cookie("csrf-token", csrfToken)
+                .formParam("csrf-token", csrfToken)
+                .multiPart("file", "bomb.zip", zipData, "application/zip")
+                .when()
+                .post("/upload")
+                .then()
+                .statusCode(400);
+    }
+
+    private byte[] createLargeZipFile() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ZipOutputStream zos = new ZipOutputStream(baos)) {
+            ZipEntry entry = new ZipEntry("large.properties");
+            zos.putNextEntry(entry);
+            // 100MB + 1 byte
+            byte[] largeData = new byte[100 * 1024 * 1024 + 1];
+            zos.write(largeData);
+            zos.closeEntry();
+        }
+        return baos.toByteArray();
+    }
 }
