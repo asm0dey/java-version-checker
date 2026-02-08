@@ -19,7 +19,7 @@ dependencies {
     implementation("io.quarkus:quarkus-qute")
     implementation("io.quarkus:quarkus-rest-csrf")
     implementation("io.quarkus:quarkus-rest-jsonb")
-    implementation("org.apache.poi:poi-ooxml:5.4.1")
+    implementation("net.lingala.zip4j:zip4j:2.11.5")
 //    implementation("io.quarkus:quarkus-arc")
 //    implementation("io.quarkus:quarkus-resteasy")
     testImplementation("io.quarkus:quarkus-junit5")

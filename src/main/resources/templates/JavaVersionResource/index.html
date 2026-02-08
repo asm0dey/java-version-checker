@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Java Version Analyzer</title>
+    <link rel="stylesheet" href="/css/theme.css">
+    <script src="/js/theme.js"></script>
     <style>
         * {
             margin: 0;
@@ -13,79 +15,85 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-body);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            transition: var(--theme-transition);
         }
 
         .container {
-            background: white;
+            background: var(--bg-container);
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-default);
             padding: 40px;
             max-width: 600px;
             width: 100%;
             text-align: center;
+            transition: var(--theme-transition);
         }
 
         h1 {
-            color: #333;
+            color: var(--text-primary);
             margin-bottom: 10px;
             font-size: 2.5em;
             font-weight: 300;
+            transition: var(--theme-transition);
         }
 
         .subtitle {
-            color: #666;
+            color: var(--text-secondary);
             margin-bottom: 40px;
             font-size: 1.1em;
+            transition: var(--theme-transition);
         }
 
         .upload-area {
-            border: 3px dashed #ddd;
+            border: 3px dashed var(--border-default);
             border-radius: 15px;
             padding: 60px 20px;
             margin-bottom: 30px;
-            transition: all 0.3s ease;
+            transition: var(--transition-default);
             cursor: pointer;
             position: relative;
             overflow: hidden;
         }
 
         .upload-area:hover {
-            border-color: #667eea;
-            background-color: #f8f9ff;
+            border-color: var(--border-hover);
+            background-color: var(--bg-hover);
         }
 
         .upload-area.dragover {
-            border-color: #667eea;
-            background-color: #f0f2ff;
+            border-color: var(--border-hover);
+            background-color: var(--bg-tertiary);
             transform: scale(1.02);
         }
 
         .upload-icon {
             font-size: 4em;
-            color: #ddd;
+            color: var(--border-default);
             margin-bottom: 20px;
             transition: color 0.3s ease;
         }
 
         .upload-area:hover .upload-icon {
-            color: #667eea;
+            color: var(--color-primary);
         }
 
         .upload-text {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 1.2em;
             margin-bottom: 10px;
+            transition: var(--theme-transition);
         }
 
         .upload-subtext {
-            color: #999;
+            color: var(--text-muted);
             font-size: 0.9em;
+            transition: var(--theme-transition);
         }
 
         #file-input {
@@ -93,35 +101,37 @@
         }
 
         .file-info {
-            background: #f8f9fa;
+            background: var(--bg-secondary);
             border-radius: 10px;
             padding: 15px;
             margin: 20px 0;
             display: none;
+            transition: var(--theme-transition);
         }
 
         .file-name {
             font-weight: 600;
-            color: #333;
+            color: var(--text-primary);
+            transition: var(--theme-transition);
         }
 
         .submit-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-end) 100%);
+            color: var(--text-white);
             border: none;
             padding: 15px 40px;
             border-radius: 50px;
             font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            transition: var(--transition-default);
+            box-shadow: var(--shadow-small);
             display: none;
         }
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: var(--shadow-medium);
         }
 
         .submit-btn:active {
@@ -130,7 +140,7 @@
 
         .loading {
             display: none;
-            color: #667eea;
+            color: var(--color-primary);
             font-size: 1.1em;
             margin-top: 20px;
         }
@@ -139,8 +149,8 @@
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
+            border: 3px solid var(--border-default);
+            border-top: 3px solid var(--color-primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-right: 10px;
@@ -161,16 +171,18 @@
         }
 
         .help-section h2 {
-            color: #333;
+            color: var(--text-primary);
             margin-bottom: 20px;
             font-size: 1.8em;
             text-align: center;
+            transition: var(--theme-transition);
         }
 
         .help-content {
-            background: #f8f9fa;
+            background: var(--bg-secondary);
             border-radius: 15px;
             padding: 30px;
+            transition: var(--theme-transition);
         }
 
         .help-item {
@@ -182,19 +194,21 @@
         }
 
         .help-item h3 {
-            color: #667eea;
+            color: var(--text-link);
             margin-bottom: 15px;
             font-size: 1.2em;
+            transition: var(--theme-transition);
         }
 
         .code-block {
-            background: #2d3748;
-            color: #e2e8f0;
+            background: var(--bg-code);
+            color: var(--text-light);
             padding: 15px;
             border-radius: 8px;
             font-family: 'Courier New', monospace;
             font-size: 0.9em;
             overflow-x: auto;
+            transition: var(--theme-transition);
         }
 
         .code-block code {
@@ -213,28 +227,30 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background: #667eea;
-            color: white;
+            background: linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-end) 100%);
+            color: var(--text-white);
             border: none;
             padding: 8px 12px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 0.8em;
             z-index: 1;
+            transition: var(--transition-fast);
         }
 
         .copy-btn:hover {
-            background: #5a67d8;
+            opacity: 0.9;
         }
 
         .java-code {
-            color: #e2e8f0;
+            color: var(--text-light);
             padding: 15px;
             margin: 0;
             font-family: 'Courier New', monospace;
             font-size: 0.85em;
             overflow-x: auto;
             white-space: pre;
+            transition: var(--theme-transition);
         }
 
         .collapsible-header {
@@ -243,12 +259,12 @@
             justify-content: space-between;
             cursor: pointer;
             padding: 5px 0;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid var(--border-medium);
             margin-bottom: 15px;
         }
 
         .collapsible-header:hover h3 {
-            color: #5a67d8;
+            opacity: 0.8;
         }
 
         .toggle-btn {
@@ -256,14 +272,14 @@
             border: none;
             font-size: 1.2em;
             cursor: pointer;
-            color: #667eea;
+            color: var(--color-primary);
             transition: transform 0.3s ease;
             padding: 5px;
             border-radius: 3px;
         }
 
         .toggle-btn:hover {
-            background-color: #f0f2ff;
+            background-color: var(--bg-tertiary);
         }
 
         .toggle-btn.collapsed {
@@ -284,6 +300,13 @@
     </style>
 </head>
 <body>
+<div class="theme-toggle">
+    <select id="theme-selector" aria-label="Select theme">
+        <option value="auto">🌓 Auto</option>
+        <option value="light">☀️ Light</option>
+        <option value="dark">🌙 Dark</option>
+    </select>
+</div>
 <div class="container">
     <h1>Java Version Analyzer</h1>
     <p class="subtitle">Upload a ZIP archive or a properties file containing Java runtime properties</p>
@@ -318,9 +341,9 @@
                     <button class="toggle-btn collapsed" id="step1-toggle-btn">▼</button>
                 </div>
                 <div class="collapsible-content" id="step1-section">
-                    <p style="margin-bottom: 15px; color: #666;">Run JavaRuntimeInfo.java on every server for every Java installation in production. Use random file names to avoid conflicts.</p>
+                    <p style="margin-bottom: 15px; color: var(--text-secondary);">Run JavaRuntimeInfo.java on every server for every Java installation in production. Use random file names to avoid conflicts.</p>
 
-                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">For each production server:</h4>
+                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">For each production server:</h4>
                     <div class="code-block">
                         <code># Generate a random filename</code>
                         <code>RANDOM_NAME="java-info-$(hostname)-$(date +%s)-$RANDOM.properties"</code>
@@ -330,7 +353,7 @@
                         <code>$JAVA_HOME/bin/java JavaRuntimeInfo --out="$RANDOM_NAME"</code>
                     </div>
 
-                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">For Docker containers:</h4>
+                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">For Docker containers:</h4>
                     <div class="code-block">
                         <code># Generate random filename</code>
                         <code>RANDOM_NAME="java-info-container-$(date +%s)-$RANDOM.properties"</code>
@@ -340,7 +363,7 @@
                         <code>  "cd / && javac JavaRuntimeInfo.java && java JavaRuntimeInfo --out=$RANDOM_NAME && cat $RANDOM_NAME" > "$RANDOM_NAME"</code>
                     </div>
 
-                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">Automated collection script example:</h4>
+                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Automated collection script example:</h4>
                     <div class="code-block">
                         <code>#!/bin/bash</code>
                         <code>mkdir -p java-runtime-collection</code>
@@ -358,7 +381,7 @@
 
                     <div style="margin-top: 30px;">
                         <div class="collapsible-header" onclick="toggleJavaCode()">
-                            <h4 style="color: #667eea; margin: 0; font-size: 1.1em;">JavaRuntimeInfo.java Source Code:</h4>
+                            <h4 style="color: var(--text-link); margin: 0; font-size: 1.1em;">JavaRuntimeInfo.java Source Code:</h4>
                             <button class="toggle-btn collapsed" id="toggle-btn">▼</button>
                         </div>
                         <div class="collapsible-content" id="java-code-section">
@@ -432,15 +455,15 @@ public class JavaRuntimeInfo {
                     <button class="toggle-btn collapsed" id="step2-toggle-btn">▼</button>
                 </div>
                 <div class="collapsible-content" id="step2-section">
-                    <p style="margin-bottom: 15px; color: #666;">Collect all .properties files from all servers and create a single ZIP archive.</p>
+                    <p style="margin-bottom: 15px; color: var(--text-secondary);">Collect all .properties files from all servers and create a single ZIP archive.</p>
 
-                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">Basic ZIP creation:</h4>
+                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Basic ZIP creation:</h4>
                     <div class="code-block">
                         <code># Create archive with all properties files</code>
                         <code>zip -r java-runtime-archive-$(date +%Y%m%d-%H%M%S).zip *.properties</code>
                     </div>
 
-                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">Advanced: Organize by server/environment:</h4>
+                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Advanced: Organize by server/environment:</h4>
                     <div class="code-block">
                         <code># Create directory structure</code>
                         <code>mkdir -p archive-staging/production archive-staging/staging archive-staging/development</code>
@@ -455,7 +478,7 @@ public class JavaRuntimeInfo {
                         <code>zip -r ../java-runtime-archive-$(date +%Y%m%d-%H%M%S).zip .</code>
                     </div>
 
-                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">Verification:</h4>
+                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Verification:</h4>
                     <div class="code-block">
                         <code># List contents of the archive</code>
                         <code>unzip -l java-runtime-archive-*.zip</code>
@@ -472,20 +495,20 @@ public class JavaRuntimeInfo {
                     <button class="toggle-btn collapsed" id="step3-toggle-btn">▼</button>
                 </div>
                 <div class="collapsible-content" id="step3-section">
-                    <p style="margin-bottom: 15px; color: #666;">Open this page and upload your ZIP archive using the form above.</p>
+                    <p style="margin-bottom: 15px; color: var(--text-secondary);">Open this page and upload your ZIP archive using the form above.</p>
 
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                        <p style="margin: 0; color: #666;">1. Use the drag & drop area above to select your ZIP file</p>
-                        <p style="margin: 5px 0 0 0; color: #666;">2. Click "Analyze Java Versions" to upload and process</p>
-                        <p style="margin: 5px 0 0 0; color: #666;">3. Review the analysis results</p>
+                    <div style="background: var(--bg-secondary); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <p style="margin: 0; color: var(--text-secondary);">1. Use the drag & drop area above to select your ZIP file</p>
+                        <p style="margin: 5px 0 0 0; color: var(--text-secondary);">2. Click "Analyze Java Versions" to upload and process</p>
+                        <p style="margin: 5px 0 0 0; color: var(--text-secondary);">3. Review the analysis results</p>
                     </div>
 
-                    <h4 style="color: #667eea; margin: 15px 0 10px 0; font-size: 1.1em;">Best Practices:</h4>
-                    <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
-                        <p style="margin: 0 0 10px 0; color: #666;">• Include server/environment information in filenames</p>
-                        <p style="margin: 0 0 10px 0; color: #666;">• Keep archives under 100MB for optimal processing</p>
-                        <p style="margin: 0 0 10px 0; color: #666;">• Document the collection date and scope</p>
-                        <p style="margin: 0; color: #666;">• Store archives for compliance and historical analysis</p>
+                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Best Practices:</h4>
+                    <div style="background: var(--bg-tertiary); padding: 15px; border-radius: 8px; border-left: 4px solid var(--color-primary);">
+                        <p style="margin: 0 0 10px 0; color: var(--text-secondary);">• Include server/environment information in filenames</p>
+                        <p style="margin: 0 0 10px 0; color: var(--text-secondary);">• Keep archives under 100MB for optimal processing</p>
+                        <p style="margin: 0 0 10px 0; color: var(--text-secondary);">• Document the collection date and scope</p>
+                        <p style="margin: 0; color: var(--text-secondary);">• Store archives for compliance and historical analysis</p>
                     </div>
                 </div>
             </div>
