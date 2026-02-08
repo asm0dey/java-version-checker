@@ -1,0 +1,160 @@
+/* Theme Toggle - CSS Variables */
+
+:root {
+    /* Light Theme (Default) */
+    --color-primary: #667eea;
+    --color-secondary: #764ba2;
+    --color-gradient-start: #667eea;
+    --color-gradient-end: #764ba2;
+    
+    /* Backgrounds */
+    --bg-body: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --bg-container: white;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #f0f2ff;
+    --bg-hover: #f8f9ff;
+    --bg-code: #2d3748;
+    
+    /* Text */
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-muted: #999999;
+    --text-light: #e2e8f0;
+    --text-white: white;
+    --text-link: #667eea;
+    
+    /* Borders */
+    --border-default: #ddd;
+    --border-hover: #667eea;
+    --border-light: #f1f3f4;
+    --border-medium: #e0e0e0;
+    --border-table: #dee2e6;
+    
+    /* Shadows */
+    --shadow-default: 0 20px 40px rgba(0, 0, 0, 0.1);
+    --shadow-small: 0 5px 15px rgba(102, 126, 234, 0.3);
+    --shadow-medium: 0 8px 25px rgba(102, 126, 234, 0.4);
+    --shadow-card: 0 5px 15px rgba(0, 0, 0, 0.08);
+    
+    /* Status Badges */
+    --badge-warning-bg: #fff3cd;
+    --badge-warning-text: #5c4002;
+    --badge-warning-border: #ffeaa7;
+    --badge-danger-bg: #f8d7da;
+    --badge-danger-text: #5a1219;
+    --badge-danger-border: #f5c6cb;
+    --badge-success-bg: #d4edda;
+    --badge-success-text: #0f3d1c;
+    --badge-success-border: #c3e6cb;
+    --badge-info-bg: #e3f2fd;
+    --badge-info-text: #0a4480;
+    
+    /* Tooltip */
+    --tooltip-bg: #333;
+    --tooltip-text: #fff;
+    
+    /* Transitions */
+    --transition-default: all 0.3s ease;
+    --transition-fast: all 0.2s ease;
+    --theme-transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+[data-theme="dark"] {
+    /* Dark Theme */
+    --color-primary: #8b9dc3;
+    --color-secondary: #a8b9e0;
+    --color-gradient-start: #1a1a2e;
+    --color-gradient-end: #16213e;
+    
+    /* Backgrounds */
+    --bg-body: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    --bg-container: #1e1e2e;
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #252538;
+    --bg-tertiary: #2d2d44;
+    --bg-hover: #2a2a40;
+    --bg-code: #0d1117;
+    
+    /* Text */
+    --text-primary: #e2e8f0;
+    --text-secondary: #a0aec0;
+    --text-muted: #718096;
+    --text-light: #cbd5e0;
+    --text-white: #e2e8f0;
+    --text-link: #8b9dc3;
+    
+    /* Borders */
+    --border-default: #3d3d5c;
+    --border-hover: #8b9dc3;
+    --border-light: #2d2d44;
+    --border-medium: #3d3d5c;
+    --border-table: #3d3d5c;
+    
+    /* Shadows */
+    --shadow-default: 0 20px 40px rgba(0, 0, 0, 0.4);
+    --shadow-small: 0 5px 15px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.4);
+    --shadow-card: 0 5px 15px rgba(0, 0, 0, 0.3);
+    
+    /* Status Badges - adjusted for dark mode */
+    --badge-warning-bg: rgba(255, 243, 205, 0.15);
+    --badge-warning-text: #ffeaa7;
+    --badge-warning-border: rgba(255, 234, 167, 0.3);
+    --badge-danger-bg: rgba(248, 215, 218, 0.15);
+    --badge-danger-text: #f5c6cb;
+    --badge-danger-border: rgba(245, 198, 203, 0.3);
+    --badge-success-bg: rgba(212, 237, 218, 0.15);
+    --badge-success-text: #c3e6cb;
+    --badge-success-border: rgba(195, 230, 203, 0.3);
+    --badge-info-bg: rgba(227, 242, 253, 0.15);
+    --badge-info-text: #90caf9;
+    
+    /* Tooltip */
+    --tooltip-bg: #2d2d44;
+    --tooltip-text: #e2e8f0;
+}
+
+/* Theme Toggle UI Component */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.theme-toggle select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-default);
+    background: var(--bg-container);
+    color: var(--text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+}
+
+.theme-toggle select:hover {
+    border-color: var(--border-hover);
+}
+
+.theme-toggle select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+[data-theme="dark"] .theme-toggle select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b9dc3' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+}
+
+/* Theme icon */
+.theme-icon {
+    display: inline-block;
+    margin-right: 6px;
+}

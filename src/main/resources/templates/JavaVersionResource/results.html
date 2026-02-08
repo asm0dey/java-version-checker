@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Java Version Analysis Results</title>
+    <link rel="stylesheet" href="/css/theme.css">
+    <script src="/js/theme.js"></script>
     <style>
         * {
             margin: 0;
@@ -13,23 +15,25 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-body);
             min-height: 100vh;
             padding: 20px;
+            transition: var(--theme-transition);
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
+            background: var(--bg-container);
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-default);
             overflow: hidden;
+            transition: var(--theme-transition);
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-end) 100%);
+            color: var(--text-white);
             padding: 40px;
             text-align: center;
         }
@@ -75,49 +79,55 @@
         }
 
         .file-info {
-            background: #f8f9fa;
+            background: var(--bg-secondary);
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 30px;
             text-align: center;
+            transition: var(--theme-transition);
         }
 
         .file-name {
             font-size: 1.2em;
             font-weight: 600;
-            color: #333;
+            color: var(--text-primary);
             margin-bottom: 5px;
+            transition: var(--theme-transition);
         }
 
         .file-details {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 0.9em;
+            transition: var(--theme-transition);
         }
 
         .table-container {
-            background: white;
+            background: var(--bg-container);
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--shadow-card);
             overflow: hidden;
             margin-bottom: 30px;
+            transition: var(--theme-transition);
         }
 
         .table-header {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
             padding: 20px;
-            border-bottom: 2px solid #dee2e6;
+            border-bottom: 2px solid var(--border-table);
         }
 
         .table-title {
             font-size: 1.3em;
             font-weight: 600;
-            color: #333;
+            color: var(--text-primary);
             margin-bottom: 5px;
+            transition: var(--theme-transition);
         }
 
         .table-subtitle {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 0.9em;
+            transition: var(--theme-transition);
         }
 
         table {
@@ -138,30 +148,32 @@
         th, td {
             padding: 15px 20px;
             text-align: left;
-            border-bottom: 1px solid #f1f3f4;
+            border-bottom: 1px solid var(--border-light);
         }
 
         th {
-            background: #fafbfc;
+            background: var(--bg-secondary);
             font-weight: 600;
-            color: #333;
+            color: var(--text-primary);
             font-size: 0.9em;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            transition: var(--theme-transition);
         }
 
         td {
-            color: #555;
+            color: var(--text-secondary);
             font-size: 0.95em;
+            transition: var(--theme-transition);
         }
 
         tr:hover {
-            background-color: #f8f9ff;
+            background-color: var(--bg-hover);
         }
 
         .version-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-end) 100%);
+            color: var(--text-white);
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.85em;
@@ -170,8 +182,8 @@
         }
 
         .vendor-tag {
-            background: #e3f2fd;
-            color: #1976d2;
+            background: var(--badge-info-bg);
+            color: var(--badge-info-text);
             padding: 3px 8px;
             border-radius: 12px;
             font-size: 0.8em;
@@ -180,63 +192,63 @@
         }
 
         .warning-badge {
-            background: #fff3cd;
-            color: #856404;
+            background: var(--badge-warning-bg);
+            color: var(--badge-warning-text);
             padding: 3px 8px;
             border-radius: 12px;
             font-size: 0.8em;
             font-weight: 500;
-            border: 1px solid #ffeaa7;
+            border: 1px solid var(--badge-warning-border);
         }
 
         .danger-badge {
-            background: #f8d7da;
-            color: #721c24;
+            background: var(--badge-danger-bg);
+            color: var(--badge-danger-text);
             padding: 3px 8px;
             border-radius: 12px;
             font-size: 0.8em;
             font-weight: 500;
-            border: 1px solid #f5c6cb;
+            border: 1px solid var(--badge-danger-border);
         }
 
         .success-badge {
-            background: #d4edda;
-            color: #155724;
+            background: var(--badge-success-bg);
+            color: var(--badge-success-text);
             padding: 3px 8px;
             border-radius: 12px;
             font-size: 0.8em;
             font-weight: 500;
-            border: 1px solid #c3e6cb;
+            border: 1px solid var(--badge-success-border);
         }
 
         .very-old-badge {
-            background: #f8d7da;
-            color: #721c24;
+            background: var(--badge-danger-bg);
+            color: var(--badge-danger-text);
             padding: 3px 8px;
             border-radius: 12px;
             font-size: 0.8em;
             font-weight: 500;
-            border: 1px solid #f5c6cb;
+            border: 1px solid var(--badge-danger-border);
         }
 
         .old-badge {
-            background: #fff3cd;
-            color: #856404;
+            background: var(--badge-warning-bg);
+            color: var(--badge-warning-text);
             padding: 3px 8px;
             border-radius: 12px;
             font-size: 0.8em;
             font-weight: 500;
-            border: 1px solid #ffeaa7;
+            border: 1px solid var(--badge-warning-border);
         }
 
         .ok-badge {
-            background: #d4edda;
-            color: #155724;
+            background: var(--badge-success-bg);
+            color: var(--badge-success-text);
             padding: 3px 8px;
             border-radius: 12px;
             font-size: 0.8em;
             font-weight: 500;
-            border: 1px solid #c3e6cb;
+            border: 1px solid var(--badge-success-border);
         }
 
         .license-info {
@@ -248,8 +260,8 @@
             visibility: hidden;
             width: 300px;
             max-width: 90vw;
-            background-color: #333;
-            color: #fff;
+            background-color: var(--tooltip-bg);
+            color: var(--tooltip-text);
             text-align: left;
             border-radius: 6px;
             padding: 8px;
@@ -272,7 +284,7 @@
             right: 20px;
             border-width: 5px;
             border-style: solid;
-            border-color: #333 transparent transparent transparent;
+            border-color: var(--tooltip-bg) transparent transparent transparent;
         }
 
         .license-info:hover .license-tooltip {
@@ -281,29 +293,30 @@
         }
 
         .back-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-end) 100%);
+            color: var(--text-white);
             border: none;
             padding: 15px 30px;
             border-radius: 50px;
             font-size: 1em;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            transition: var(--transition-default);
+            box-shadow: var(--shadow-small);
             text-decoration: none;
             display: inline-block;
         }
 
         .back-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: var(--shadow-medium);
         }
 
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #666;
+            color: var(--text-secondary);
+            transition: var(--theme-transition);
         }
 
         .empty-icon {
@@ -315,11 +328,13 @@
         .empty-text {
             font-size: 1.2em;
             margin-bottom: 10px;
+            color: var(--text-primary);
         }
 
         .empty-subtext {
             font-size: 0.9em;
             opacity: 0.7;
+            color: var(--text-secondary);
         }
 
         @media (max-width: 768px) {
@@ -351,6 +366,13 @@
     </style>
 </head>
 <body>
+    <div class="theme-toggle">
+        <select id="theme-selector" aria-label="Select theme">
+            <option value="auto">🌓 Auto</option>
+            <option value="light">☀️ Light</option>
+            <option value="dark">🌙 Dark</option>
+        </select>
+    </div>
     <div class="container">
         <div class="header">
             <h1>Analysis Results</h1>
