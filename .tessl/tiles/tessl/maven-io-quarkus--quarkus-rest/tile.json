@@ -1,0 +1,8 @@
+{
+  "name": "tessl/maven-io-quarkus--quarkus-rest",
+  "version": "3.15.0",
+  "docs": "docs/index.md",
+  "describes": "pkg:maven/io.quarkus/quarkus-rest@3.15.7",
+  "summary": "A Jakarta REST implementation utilizing build time processing and Vert.x for high-performance REST endpoints with reactive programming support, security integration, and cloud-native features.",
+  "private": false
+}

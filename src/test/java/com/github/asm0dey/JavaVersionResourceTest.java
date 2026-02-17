@@ -10,6 +10,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.StringContains.containsString;
 
 @QuarkusTest
@@ -141,5 +142,79 @@ public class JavaVersionResourceTest {
             zos.closeEntry();
         }
         return baos.toByteArray();
+    }
+
+    /**
+     * TS-010: GET /api/versions returns JSON array
+     */
+    @Test
+    public void testGetVersionsEndpoint() {
+        given()
+                .when().get("/api/versions")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("$", instanceOf(java.util.List.class))
+                .body("size()", greaterThan(500));
+    }
+
+    /**
+     * TS-011: GET /api/versions preserves file order
+     */
+    @Test
+    public void testVersionsPreservesOrder() {
+        String[] versions = given()
+                .when().get("/api/versions")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .extract().as(String[].class);
+
+        // Verify we have versions and they're in expected order
+        // The file starts with 1.0, 1.0.1, 1.0.2, etc.
+        assertTrue(versions.length > 500, "Should have 500+ versions");
+        assertEquals("1.0", versions[0], "First version should be 1.0");
+        assertEquals("1.0.1", versions[1], "Second version should be 1.0.1");
+        assertEquals("1.0.2", versions[2], "Third version should be 1.0.2");
+    }
+
+    /**
+     * TS-012: GET /api/versions returns cache headers
+     */
+    @Test
+    public void testVersionsCacheHeaders() {
+        given()
+                .when().get("/api/versions")
+                .then()
+                .statusCode(200)
+                .header("Cache-Control", "public, max-age=3600");
+    }
+
+    /**
+     * TS-013: GET /api/versions responds within 100ms
+     */
+    @Test
+    public void testVersionsPerformance() {
+        long start = System.currentTimeMillis();
+
+        given()
+                .when().get("/api/versions")
+                .then()
+                .statusCode(200);
+
+        long duration = System.currentTimeMillis() - start;
+        assertTrue(duration < 100, "Response should be under 100ms, was: " + duration + "ms");
+    }
+
+    private static void assertTrue(boolean condition, String message) {
+        if (!condition) {
+            throw new AssertionError(message);
+        }
+    }
+
+    private static void assertEquals(String expected, String actual, String message) {
+        if (!expected.equals(actual)) {
+            throw new AssertionError(message + " - expected: " + expected + ", actual: " + actual);
+        }
     }
 }

@@ -4,6 +4,15 @@
   "dependencies": {
     "tessl-labs/intent-integrity-kit": {
       "version": "1.4.2"
+    },
+    "tessl/maven-io-quarkus--quarkus-rest": {
+      "version": "3.15.0"
+    },
+    "tessl/maven-io-quarkus--quarkus-junit5": {
+      "version": "3.26.0"
+    },
+    "tessl/maven-org-junit-jupiter--junit-jupiter": {
+      "version": "5.12.0"
     }
   }
 }

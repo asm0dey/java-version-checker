@@ -1,0 +1,7 @@
+{
+  "testify": {
+    "assertion_hash": "e24261bbaad1e3152d4b24d6e2a44797c011f78ade2e501ae914e8e3249da489",
+    "generated_at": "2026-02-17T13:18:06Z",
+    "test_specs_file": "/home/finkel/work_self/java-version-checker/specs/004-centralize-version-source/tests/test-specs.md"
+  }
+}

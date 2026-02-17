@@ -2,8 +2,10 @@ package com.github.asm0dey;
 
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.model.FileHeader;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
@@ -15,6 +17,9 @@ import java.util.List;
 
 @Path("/")
 public class JavaVersionResource {
+
+    @Inject
+    VersionListService versionListService;
 
     @CheckedTemplate
     public static class Templates {
@@ -28,6 +33,16 @@ public class JavaVersionResource {
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance index() {
         return Templates.index();
+    }
+
+    @GET
+    @Path("/api/versions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getVersions() {
+        List<String> versions = versionListService.getVersions();
+        return Response.ok(versions)
+                .header("Cache-Control", "public, max-age=3600")
+                .build();
     }
 
     @POST

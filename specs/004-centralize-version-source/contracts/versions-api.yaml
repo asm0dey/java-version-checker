@@ -1,0 +1,90 @@
+openapi: 3.0.3
+info:
+  title: Java Version Checker - Versions API
+  description: API for retrieving the centralized list of Java versions
+  version: 1.0.0
+  contact:
+    name: Java Version Checker
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /api/versions:
+    get:
+      summary: Get list of Java versions
+      description: |
+        Returns the complete list of Java versions from the centralized data source
+        (src/main/resources/java_versions.txt). This endpoint is used by the frontend
+        to populate version selection dropdowns, ensuring backend and frontend always
+        show identical version lists.
+      operationId: getVersions
+      tags:
+        - Versions
+      responses:
+        '200':
+          description: Successfully retrieved version list
+          headers:
+            Cache-Control:
+              description: Caching directive for browsers
+              schema:
+                type: string
+                example: "public, max-age=3600"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  example: "17.0.1"
+                description: Array of Java version strings
+                minItems: 1
+              examples:
+                versions:
+                  summary: Example version list
+                  value: [
+                    "1.0",
+                    "1.0.1",
+                    "1.0.2",
+                    "11",
+                    "11.0.1",
+                    "11.0.10",
+                    "17",
+                    "17.0.1",
+                    "17.0.10",
+                    "21",
+                    "21.0.1",
+                    "21.0.10",
+                    "25",
+                    "25.0.1",
+                    "25.0.2"
+                  ]
+        '500':
+          description: Internal server error - failed to load version list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to load version list"
+              examples:
+                error:
+                  summary: Error response
+                  value:
+                    error: "Failed to load version list"
+
+components:
+  schemas:
+    VersionList:
+      type: array
+      items:
+        type: string
+      description: List of Java version strings
+      example: ["1.0", "11", "17", "21"]
+
+tags:
+  - name: Versions
+    description: Operations related to Java version list management

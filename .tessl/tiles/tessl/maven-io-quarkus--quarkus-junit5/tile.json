@@ -1,0 +1,7 @@
+{
+  "name": "tessl/maven-io-quarkus--quarkus-junit5",
+  "version": "3.26.0",
+  "docs": "docs/index.md",
+  "describes": "pkg:maven/io.quarkus/quarkus-junit5@3.26.2",
+  "summary": "JUnit 5 testing extension for Quarkus applications providing comprehensive test support including CDI injection, mocking, and integration testing capabilities"
+}
