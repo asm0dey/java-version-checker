@@ -1,6 +1,6 @@
 {
   "name": "tessl-labs/intent-integrity-kit",
-  "version": "1.0.7",
+  "version": "1.4.2",
   "summary": "Closing the intent-to-code chasm - specification-driven development with cryptographic verification",
   "private": false,
   "docs": "index.md",

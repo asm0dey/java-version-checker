@@ -36,33 +36,33 @@ Before ANY action, load and analyze the project constitution for TDD requirement
 
    **Strong indicators (high confidence)**:
    - "TDD", "test-first", "red-green-refactor", "write tests before"
-   - Combined with MUST, REQUIRED, NON-NEGOTIABLE → **mandatory**
+   - Combined with MUST, REQUIRED, NON-NEGOTIABLE -> **mandatory**
 
    **Moderate indicators (medium confidence)**:
    - "test-driven", "tests required before code", "tests before implementation"
-   - Combined with MUST, REQUIRED → **mandatory**
+   - Combined with MUST, REQUIRED -> **mandatory**
 
    **Implicit indicators (low confidence)**:
    - "quality gates", "coverage requirements", "test coverage"
-   - Combined with SHOULD → **optional**
+   - Combined with SHOULD -> **optional**
 
    **Prohibition indicators**:
    - "test-after", "integration tests only", "no unit tests required"
-   - Combined with MUST, REQUIRED → **forbidden**
+   - Combined with MUST, REQUIRED -> **forbidden**
 
    **No indicators**:
-   - No TDD-related terms found → **optional** (high confidence)
+   - No TDD-related terms found -> **optional** (high confidence)
 
 4. **Output TDD Assessment**:
    ```
-   ╭─────────────────────────────────────────────────────╮
-   │  TDD ASSESSMENT                                     │
-   ├─────────────────────────────────────────────────────┤
-   │  Determination: [mandatory | optional | forbidden]  │
-   │  Confidence:    [high | medium | low]               │
-   │  Evidence:      "[quoted constitutional text]"      │
-   │  Reasoning:     [explanation]                       │
-   ╰─────────────────────────────────────────────────────╯
+   +-----------------------------------------------------+
+   |  TDD ASSESSMENT                                     |
+   +-----------------------------------------------------+
+   |  Determination: [mandatory | optional | forbidden]  |
+   |  Confidence:    [high | medium | low]               |
+   |  Evidence:      "[quoted constitutional text]"      |
+   |  Reasoning:     [explanation]                       |
+   +-----------------------------------------------------+
    ```
 
 5. **If determination is "forbidden"**:
@@ -103,6 +103,18 @@ Before ANY action, load and analyze the project constitution for TDD requirement
    Testify requires a completed specification.
    Run: /iikit-01-specify
    ```
+
+6. **Checklist completion check** (soft gate):
+   - If `FEATURE_DIR/checklists/` directory exists and contains `.md` files:
+     - Parse all checklist files for `- [ ]` (unchecked) and `- [x]` (checked) items
+     - If any unchecked items remain:
+       ```
+       WARNING: Checklists exist but are incomplete (X/Y items checked, Z%).
+       Recommend running /iikit-04-checklist to resolve before proceeding.
+       Continue anyway? [y/N]
+       ```
+     - If user declines, stop and suggest `/iikit-04-checklist`
+   - If no checklists directory exists: proceed silently (checklists are optional)
 
 ## Acceptance Scenario Validation
 
@@ -226,13 +238,13 @@ If `tests/test-specs.md` already exists:
 
 Output semantic diff:
 ```
-╭─────────────────────────────────────────────────────╮
-│  TEST SPEC UPDATE                                   │
-├─────────────────────────────────────────────────────┤
-│  Preserved: X tests (unchanged requirements)        │
-│  Added:     Y tests (new requirements)              │
-│  Removed:   Z tests (requirements removed)          │
-╰─────────────────────────────────────────────────────╯
++-----------------------------------------------------+
+|  TEST SPEC UPDATE                                   |
++-----------------------------------------------------+
+|  Preserved: X tests (unchanged requirements)        |
+|  Added:     Y tests (new requirements)              |
+|  Removed:   Z tests (requirements removed)          |
++-----------------------------------------------------+
 ```
 
 ### 5. Create Output Directory
@@ -251,7 +263,7 @@ mkdir -p FEATURE_DIR/tests
 **Unix/macOS/Linux:**
 ```bash
 # Store in context.json (primary)
-bash .tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/bash/testify-tdd.sh store-hash "FEATURE_DIR/tests/test-specs.md" ".specify/context.json"
+bash .tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/bash/testify-tdd.sh store-hash "FEATURE_DIR/tests/test-specs.md" "FEATURE_DIR/context.json"
 
 # Store as git note (tamper-resistant backup)
 bash .tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/bash/testify-tdd.sh store-git-note "FEATURE_DIR/tests/test-specs.md"
@@ -260,14 +272,14 @@ bash .tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/bash
 **Windows (PowerShell):**
 ```powershell
 # Store in context.json (primary)
-pwsh .tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/powershell/testify-tdd.ps1 store-hash "FEATURE_DIR/tests/test-specs.md" ".specify/context.json"
+pwsh .tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/powershell/testify-tdd.ps1 store-hash "FEATURE_DIR/tests/test-specs.md" "FEATURE_DIR/context.json"
 
 # Store as git note (tamper-resistant backup)
 pwsh .tessl/tiles/tessl-labs/intent-integrity-kit/skills/iikit-core/scripts/powershell/testify-tdd.ps1 store-git-note "FEATURE_DIR/tests/test-specs.md"
 ```
 
 This stores a SHA256 hash of all Given/When/Then assertion lines in two locations:
-1. **context.json** - Primary storage, checked first
+1. **FEATURE_DIR/context.json** - Primary storage per feature, checked first
 2. **Git note** - Tamper-resistant backup (requires git history rewrite to modify)
 
 The implement skill will verify this hash before proceeding, blocking execution if assertions were tampered with.
@@ -277,24 +289,24 @@ The implement skill will verify this hash before proceeding, blocking execution 
 Output a clear report showing what was generated:
 
 ```
-╭─────────────────────────────────────────────────────╮
-│  TESTIFY COMPLETE                                   │
-├─────────────────────────────────────────────────────┤
-│  TDD Assessment: [mandatory | optional]             │
-│                                                     │
-│  Test Specifications Generated:                     │
-│    From spec.md:       X acceptance tests           │
-│    From plan.md:       Y contract tests             │
-│    From data-model.md: Z validation tests           │
-│    ─────────────────────────────────                │
-│    Total:              N test specifications        │
-│                                                     │
-│  Output: FEATURE_DIR/tests/test-specs.md            │
-│                                                     │
-│  Assertion Integrity:                               │
-│    Hash: [first 12 chars of hash]...                │
-│    Status: LOCKED                                   │
-╰─────────────────────────────────────────────────────╯
++-----------------------------------------------------+
+|  TESTIFY COMPLETE                                   |
++-----------------------------------------------------+
+|  TDD Assessment: [mandatory | optional]             |
+|                                                     |
+|  Test Specifications Generated:                     |
+|    From spec.md:       X acceptance tests           |
+|    From plan.md:       Y contract tests             |
+|    From data-model.md: Z validation tests           |
+|    -------------------------------------            |
+|    Total:              N test specifications        |
+|                                                     |
+|  Output: FEATURE_DIR/tests/test-specs.md            |
+|                                                     |
+|  Assertion Integrity:                               |
+|    Hash: [first 12 chars of hash]...                |
+|    Status: LOCKED                                   |
++-----------------------------------------------------+
 ```
 
 **Note**: The assertion hash ensures test integrity. If test-specs.md assertions are modified without re-running testify, the implement skill will detect the tampering and refuse to proceed.

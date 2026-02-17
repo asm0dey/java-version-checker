@@ -29,15 +29,16 @@
             border-radius: 20px;
             box-shadow: var(--shadow-default);
             padding: 40px;
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
             text-align: center;
             transition: var(--theme-transition);
+            margin: auto;
         }
 
         h1 {
             color: var(--text-primary);
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             font-size: 2.5em;
             font-weight: 300;
             transition: var(--theme-transition);
@@ -45,7 +46,7 @@
 
         .subtitle {
             color: var(--text-secondary);
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             font-size: 1.1em;
             transition: var(--theme-transition);
         }
@@ -116,20 +117,31 @@
         }
 
         .submit-btn {
-            background: linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-end) 100%);
-            color: var(--text-white);
+            background: #2563eb;
+            color: white;
             border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
+            padding: 16px 48px;
+            border-radius: 12px;
             font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition-default);
-            box-shadow: var(--shadow-small);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
             display: none;
         }
 
+        [data-theme="dark"] .submit-btn {
+            background: linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-end) 100%);
+            box-shadow: var(--shadow-small);
+        }
+
         .submit-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        [data-theme="dark"] .submit-btn:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-medium);
         }
@@ -201,7 +213,7 @@
         }
 
         .code-block {
-            background: var(--bg-code);
+            background: var(--bg-code-block);
             color: var(--text-light);
             padding: 15px;
             border-radius: 8px;
@@ -218,7 +230,7 @@
 
         .code-container {
             position: relative;
-            background: #2d3748;
+            background: var(--bg-code-block);
             border-radius: 8px;
             overflow: hidden;
         }
@@ -228,7 +240,7 @@
             top: 10px;
             right: 10px;
             background: linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-end) 100%);
-            color: var(--text-white);
+            color: var(--text-button);
             border: none;
             padding: 8px 12px;
             border-radius: 5px;
@@ -297,6 +309,313 @@
             overflow-y: auto;
             transition: max-height 0.5s ease-in;
         }
+
+        /* Tabs Infrastructure */
+        .tabs-nav {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: white;
+            color: #6b7280;
+            border: 2px solid #d1d5db;
+            padding: 14px 32px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition-default);
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        [data-theme="dark"] .tab-btn {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border-color: var(--border-default);
+        }
+
+        .tab-btn:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        [data-theme="dark"] .tab-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #2563eb;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 1px #2563eb;
+        }
+
+        [data-theme="dark"] .tab-btn.active {
+            background: var(--bg-primary);
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 1px var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-default);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1em;
+            transition: var(--transition-fast);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Combobox Styles */
+        .combobox-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .combobox-input-wrapper {
+            position: relative;
+            min-height: 56px;
+            padding: 10px 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 12px;
+            background: white;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            cursor: text;
+            transition: var(--transition-fast);
+        }
+
+        [data-theme="dark"] .combobox-input-wrapper {
+            background: var(--bg-primary);
+            border-color: var(--border-default);
+        }
+
+        .combobox-input-wrapper:focus-within {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        [data-theme="dark"] .combobox-input-wrapper:focus-within {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .selected-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: #d4e3f7;
+            color: #2c5aa0;
+            border-radius: 20px;
+            font-size: 0.95em;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: var(--transition-fast);
+        }
+
+        [data-theme="dark"] .selected-chip {
+            background: var(--color-primary);
+            color: var(--text-white);
+        }
+
+        .chip-remove {
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.3em;
+            line-height: 1;
+            padding: 0 2px;
+            border-radius: 50%;
+            transition: var(--transition-fast);
+            color: #2c5aa0;
+        }
+
+        [data-theme="dark"] .chip-remove {
+            color: var(--text-white);
+        }
+
+        .chip-remove:hover {
+            background: rgba(44, 90, 160, 0.2);
+        }
+
+        [data-theme="dark"] .chip-remove:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .combobox-input-wrapper input {
+            flex: 1;
+            min-width: 120px;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 1em;
+            padding: 4px;
+        }
+
+        .combobox-input-wrapper input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .combobox-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 4px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] .combobox-dropdown {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .combobox-dropdown.show {
+            display: block;
+        }
+
+        .combobox-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            text-align: left;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .combobox-item:last-child {
+            border-bottom: none;
+        }
+
+        .combobox-item input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--color-primary);
+        }
+
+        .combobox-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .combobox-group {
+            padding: 10px 15px;
+            background: var(--bg-secondary);
+            font-weight: 700;
+            font-size: 0.85em;
+            color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid var(--border-medium);
+        }
+
+        /* Textarea Styles */
+        .version-textarea {
+            min-height: 200px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+        }
+
+        .info-box {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-left: 4px solid #2563eb;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            color: #1e40af;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .info-box code {
+            background: #bfdbfe;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #1e3a8a;
+        }
+
+        [data-theme="dark"] .info-box {
+            background: var(--bg-secondary);
+            border-color: var(--border-default);
+            border-left-color: var(--color-primary);
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .info-box code {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border-default);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: var(--transition-default);
+            background: var(--bg-secondary);
+        }
+
+        .drop-zone.dragover {
+            border-color: var(--border-hover);
+            background: var(--bg-tertiary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -307,87 +626,135 @@
         <option value="dark">🌙 Dark</option>
     </select>
 </div>
-<div class="container">
-    <h1>Java Version Analyzer</h1>
-    <p class="subtitle">Upload a ZIP archive or a properties file containing Java runtime properties</p>
+    <div class="container">
+        <h1>Java Version Analyzer</h1>
+        <p class="subtitle" id="page-subtitle">Select a Java version or upload properties for analysis</p>
 
-    <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
-        <div class="upload-area" id="upload-area">
-            <div class="upload-icon">📁</div>
-            <div class="upload-text">Click to select or drag &amp; drop your ZIP or properties file</div>
-            <div class="upload-subtext">ZIP and .properties files are supported</div>
-            <input type="file" id="file-input" name="file" accept=".zip,.properties" required>
-        </div>
-        <input type="hidden" name="{inject:csrf.parameterName}" value="{inject:csrf.token}"/>
-        <div class="file-info" id="file-info">
-            <div class="file-name" id="file-name"></div>
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('quick-tab')">Quick Selection</button>
+            <button class="tab-btn" onclick="switchTab('list-tab')">Set list of versions</button>
+            <button class="tab-btn" onclick="switchTab('audit-tab')">Detailed Audit</button>
         </div>
 
-        <button type="submit" class="submit-btn" id="submit-btn">Analyze Java Versions</button>
-
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            Processing your file...
-        </div>
-    </form>
-
-
-    <div class="help-section">
-        <h2>Step-by-Step Guide: Assembling Production Archive</h2>
-        <div class="help-content">
-            <div class="help-item">
-                <div class="collapsible-header" onclick="toggleStep1()">
-                    <h3>Step 1: Collect Java Runtime Info from Production Servers</h3>
-                    <button class="toggle-btn collapsed" id="step1-toggle-btn">▼</button>
+        <div id="quick-tab" class="tab-content active">
+            <div class="combobox-container">
+                <label for="version-search" style="display: block; margin-bottom: 8px; text-align: left; font-weight: 500; color: var(--text-primary);">Search or select Java versions:</label>
+                <div class="combobox-input-wrapper" id="combobox-wrapper">
+                    <div id="chips-container"></div>
+                    <input type="text" id="version-search" placeholder="Type to search (e.g. 17.0.1)..." autocomplete="off">
                 </div>
-                <div class="collapsible-content" id="step1-section">
-                    <p style="margin-bottom: 15px; color: var(--text-secondary);">Run JavaRuntimeInfo.java on every server for every Java installation in production. Use random file names to avoid conflicts.</p>
+                <div id="version-dropdown" class="combobox-dropdown">
+                    <!-- Versions will be injected here -->
+                </div>
+            </div>
 
-                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">For each production server:</h4>
-                    <div class="code-block">
-                        <code># Generate a random filename</code>
-                        <code>RANDOM_NAME="java-info-$(hostname)-$(date +%s)-$RANDOM.properties"</code>
-                        <code></code>
-                        <code># Compile and run JavaRuntimeInfo</code>
-                        <code>$JAVA_HOME/bin/javac JavaRuntimeInfo.java</code>
-                        <code>$JAVA_HOME/bin/java JavaRuntimeInfo --out="$RANDOM_NAME"</code>
-                    </div>
+            <div class="info-box">
+                <strong>ℹ️ Not sure?</strong> Run <code>java -version</code> in your terminal to check. You can select multiple versions if you use different ones across your environment.
+            </div>
 
-                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">For Docker containers:</h4>
-                    <div class="code-block">
-                        <code># Generate random filename</code>
-                        <code>RANDOM_NAME="java-info-container-$(date +%s)-$RANDOM.properties"</code>
-                        <code></code>
-                        <code># Run in container</code>
-                        <code>docker run -v ./JavaRuntimeInfo.java:/JavaRuntimeInfo.java --rm -it &lt;docker_tag&gt; bash -c \</code>
-                        <code>  "cd / && javac JavaRuntimeInfo.java && java JavaRuntimeInfo --out=$RANDOM_NAME && cat $RANDOM_NAME" > "$RANDOM_NAME"</code>
-                    </div>
+            <p style="font-size: 0.85em; color: var(--text-muted); text-align: center; margin-bottom: 20px;">
+                Note: We assume the versions selected are Oracle Java versions.
+            </p>
 
-                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Automated collection script example:</h4>
-                    <div class="code-block">
-                        <code>#!/bin/bash</code>
-                        <code>mkdir -p java-runtime-collection</code>
-                        <code>cd java-runtime-collection</code>
-                        <code></code>
-                        <code># For each Java installation</code>
-                        <code>for JAVA_HOME in /usr/lib/jvm/* /opt/java/* /usr/java/*; do</code>
-                        <code>  if [ -x "$JAVA_HOME/bin/java" ]; then</code>
-                        <code>    RANDOM_NAME="java-info-$(basename $JAVA_HOME)-$(hostname)-$(date +%s)-$RANDOM.properties"</code>
-                        <code>    $JAVA_HOME/bin/javac ../JavaRuntimeInfo.java</code>
-                        <code>    $JAVA_HOME/bin/java -cp .. JavaRuntimeInfo --out="$RANDOM_NAME"</code>
-                        <code>  fi</code>
-                        <code>done</code>
-                    </div>
+            <button type="button" class="submit-btn" id="analyze-quick-btn" style="display: inline-block;">Next ➤</button>
+        </div>
 
-                    <div style="margin-top: 30px;">
-                        <div class="collapsible-header" onclick="toggleJavaCode()">
-                            <h4 style="color: var(--text-link); margin: 0; font-size: 1.1em;">JavaRuntimeInfo.java Source Code:</h4>
-                            <button class="toggle-btn collapsed" id="toggle-btn">▼</button>
+        <div id="list-tab" class="tab-content">
+            <div id="version-list-drop-zone" class="drop-zone">
+                <p style="margin-bottom: 15px; color: var(--text-secondary);">Paste versions below or drag &amp; drop a .txt file here</p>
+                <textarea id="version-list-input" class="form-control version-textarea" placeholder="1.8.0_202&#10;11.0.15&#10;17.0.1"></textarea>
+            </div>
+
+            <p style="font-size: 0.85em; color: var(--text-muted); text-align: center; margin-bottom: 20px;">
+                Note: We assume the versions provided are Oracle Java versions.
+            </p>
+
+            <button type="button" class="submit-btn" id="analyze-list-btn" style="display: inline-block;">Analyze List</button>
+        </div>
+
+        <div id="audit-tab" class="tab-content">
+            <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">Click to select or drag &amp; drop your ZIP or properties file</div>
+                    <div class="upload-subtext">ZIP and .properties files are supported</div>
+                    <input type="file" id="file-input" name="file" accept=".zip,.properties" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email-input">Email for instructions (optional):</label>
+                    <input type="email" id="email-input" name="email" class="form-control" placeholder="your@email.com">
+                </div>
+
+                <input type="hidden" name="{inject:csrf.parameterName}" value="{inject:csrf.token}"/>
+                <div class="file-info" id="file-info">
+                    <div class="file-name" id="file-name"></div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submit-btn">Analyze Java Versions</button>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    Processing your file...
+                </div>
+            </form>
+
+            <div class="help-section">
+                <h2>Step-by-Step Guide: Assembling Production Archive</h2>
+                <div class="help-content">
+                    <div class="help-item">
+                        <div class="collapsible-header" onclick="toggleStep1()">
+                            <h3>Step 1: Collect Java Runtime Info from Production Servers</h3>
+                            <button class="toggle-btn collapsed" id="step1-toggle-btn">▼</button>
                         </div>
-                        <div class="collapsible-content" id="java-code-section">
-                            <div class="code-container">
-                                <button class="copy-btn" onclick="copyJavaCode()">Copy</button>
-                                <pre class="java-code" id="java-code">import java.io.*;
+                        <div class="collapsible-content" id="step1-section">
+                            <p style="margin-bottom: 15px; color: var(--text-secondary);">Run JavaRuntimeInfo.java on every server for every Java installation in production. Use random file names to avoid conflicts.</p>
+
+                            <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">For each production server:</h4>
+                            <div class="code-block">
+                                <code># Generate a random filename</code>
+                                <code>RANDOM_NAME="java-info-$(hostname)-$(date +%s)-$RANDOM.properties"</code>
+                                <code></code>
+                                <code># Compile and run JavaRuntimeInfo</code>
+                                <code>$JAVA_HOME/bin/javac JavaRuntimeInfo.java</code>
+                                <code>$JAVA_HOME/bin/java JavaRuntimeInfo --out="$RANDOM_NAME"</code>
+                            </div>
+
+                            <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">For Docker containers:</h4>
+                            <div class="code-block">
+                                <code># Generate random filename</code>
+                                <code>RANDOM_NAME="java-info-container-$(date +%s)-$RANDOM.properties"</code>
+                                <code></code>
+                                <code># Run in container</code>
+                                <code>docker run -v ./JavaRuntimeInfo.java:/JavaRuntimeInfo.java --rm -it &lt;docker_tag&gt; bash -c \</code>
+                                <code>  "cd / && javac JavaRuntimeInfo.java && java JavaRuntimeInfo --out=$RANDOM_NAME && cat $RANDOM_NAME" > "$RANDOM_NAME"</code>
+                            </div>
+
+                            <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Automated collection script example:</h4>
+                            <div class="code-block">
+                                <code>#!/bin/bash</code>
+                                <code>mkdir -p java-runtime-collection</code>
+                                <code>cd java-runtime-collection</code>
+                                <code></code>
+                                <code># For each Java installation</code>
+                                <code>for JAVA_HOME in /usr/lib/jvm/* /opt/java/* /usr/java/*; do</code>
+                                <code>  if [ -x "$JAVA_HOME/bin/java" ]; then</code>
+                                <code>    RANDOM_NAME="java-info-$(basename $JAVA_HOME)-$(hostname)-$(date +%s)-$RANDOM.properties"</code>
+                                <code>    $JAVA_HOME/bin/javac ../JavaRuntimeInfo.java</code>
+                                <code>    $JAVA_HOME/bin/java -cp .. JavaRuntimeInfo --out="$RANDOM_NAME"</code>
+                                <code>  fi</code>
+                                <code>done</code>
+                            </div>
+
+                            <div style="margin-top: 30px;">
+                                <div class="collapsible-header" onclick="toggleJavaCode()">
+                                    <h4 style="color: var(--text-link); margin: 0; font-size: 1.1em;">JavaRuntimeInfo.java Source Code:</h4>
+                                    <button class="toggle-btn collapsed" id="toggle-btn">▼</button>
+                                </div>
+                                <div class="collapsible-content" id="java-code-section">
+                                    <div class="code-container">
+                                        <button class="copy-btn" onclick="copyJavaCode()">Copy</button>
+                                        <pre class="java-code" id="java-code">import java.io.*;
 import java.util.*;
 
 public class JavaRuntimeInfo {
@@ -443,78 +810,79 @@ public class JavaRuntimeInfo {
         }
     }
 }</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <div class="collapsible-header" onclick="toggleStep2()">
+                            <h3>Step 2: Create ZIP Archive</h3>
+                            <button class="toggle-btn collapsed" id="step2-toggle-btn">▼</button>
+                        </div>
+                        <div class="collapsible-content" id="step2-section">
+                            <p style="margin-bottom: 15px; color: var(--text-secondary);">Collect all .properties files from all servers and create a single ZIP archive.</p>
+
+                            <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Basic ZIP creation:</h4>
+                            <div class="code-block">
+                                <code># Create archive with all properties files</code>
+                                <code>zip -r java-runtime-archive-$(date +%Y%m%d-%H%M%S).zip *.properties</code>
+                            </div>
+
+                            <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Advanced: Organize by server/environment:</h4>
+                            <div class="code-block">
+                                <code># Create directory structure</code>
+                                <code>mkdir -p archive-staging/production archive-staging/staging archive-staging/development</code>
+                                <code></code>
+                                <code># Move files to appropriate directories</code>
+                                <code>mv *prod*.properties archive-staging/production/</code>
+                                <code>mv *staging*.properties archive-staging/staging/</code>
+                                <code>mv *dev*.properties archive-staging/development/</code>
+                                <code></code>
+                                <code># Create organized archive</code>
+                                <code>cd archive-staging</code>
+                                <code>zip -r ../java-runtime-archive-$(date +%Y%m%d-%H%M%S).zip .</code>
+                            </div>
+
+                            <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Verification:</h4>
+                            <div class="code-block">
+                                <code># List contents of the archive</code>
+                                <code>unzip -l java-runtime-archive-*.zip</code>
+                                <code></code>
+                                <code># Test archive integrity</code>
+                                <code>unzip -t java-runtime-archive-*.zip</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="help-item">
+                        <div class="collapsible-header" onclick="toggleStep3()">
+                            <h3>Step 3: Upload Archive to Service</h3>
+                            <button class="toggle-btn collapsed" id="step3-toggle-btn">▼</button>
+                        </div>
+                        <div class="collapsible-content" id="step3-section">
+                            <p style="margin-bottom: 15px; color: var(--text-secondary);">Open this page and upload your ZIP archive using the form above.</p>
+
+                            <div style="background: var(--bg-secondary); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                                <p style="margin: 0; color: var(--text-secondary);">1. Use the drag & drop area above to select your ZIP file</p>
+                                <p style="margin: 5px 0 0 0; color: var(--text-secondary);">2. Click "Analyze Java Versions" to upload and process</p>
+                                <p style="margin: 5px 0 0 0; color: var(--text-secondary);">3. Review the analysis results</p>
+                            </div>
+
+                            <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Best Practices:</h4>
+                            <div style="background: var(--bg-tertiary); padding: 15px; border-radius: 8px; border-left: 4px solid var(--color-primary);">
+                                <p style="margin: 0 0 10px 0; color: var(--text-secondary);">• Include server/environment information in filenames</p>
+                                <p style="margin: 0 0 10px 0; color: var(--text-secondary);">• Keep archives under 100MB for optimal processing</p>
+                                <p style="margin: 0 0 10px 0; color: var(--text-secondary);">• Document the collection date and scope</p>
+                                <p style="margin: 0; color: var(--text-secondary);">• Store archives for compliance and historical analysis</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="help-item">
-                <div class="collapsible-header" onclick="toggleStep2()">
-                    <h3>Step 2: Create ZIP Archive</h3>
-                    <button class="toggle-btn collapsed" id="step2-toggle-btn">▼</button>
-                </div>
-                <div class="collapsible-content" id="step2-section">
-                    <p style="margin-bottom: 15px; color: var(--text-secondary);">Collect all .properties files from all servers and create a single ZIP archive.</p>
-
-                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Basic ZIP creation:</h4>
-                    <div class="code-block">
-                        <code># Create archive with all properties files</code>
-                        <code>zip -r java-runtime-archive-$(date +%Y%m%d-%H%M%S).zip *.properties</code>
-                    </div>
-
-                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Advanced: Organize by server/environment:</h4>
-                    <div class="code-block">
-                        <code># Create directory structure</code>
-                        <code>mkdir -p archive-staging/production archive-staging/staging archive-staging/development</code>
-                        <code></code>
-                        <code># Move files to appropriate directories</code>
-                        <code>mv *prod*.properties archive-staging/production/</code>
-                        <code>mv *staging*.properties archive-staging/staging/</code>
-                        <code>mv *dev*.properties archive-staging/development/</code>
-                        <code></code>
-                        <code># Create organized archive</code>
-                        <code>cd archive-staging</code>
-                        <code>zip -r ../java-runtime-archive-$(date +%Y%m%d-%H%M%S).zip .</code>
-                    </div>
-
-                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Verification:</h4>
-                    <div class="code-block">
-                        <code># List contents of the archive</code>
-                        <code>unzip -l java-runtime-archive-*.zip</code>
-                        <code></code>
-                        <code># Test archive integrity</code>
-                        <code>unzip -t java-runtime-archive-*.zip</code>
-                    </div>
-                </div>
-            </div>
-
-            <div class="help-item">
-                <div class="collapsible-header" onclick="toggleStep3()">
-                    <h3>Step 3: Upload Archive to Service</h3>
-                    <button class="toggle-btn collapsed" id="step3-toggle-btn">▼</button>
-                </div>
-                <div class="collapsible-content" id="step3-section">
-                    <p style="margin-bottom: 15px; color: var(--text-secondary);">Open this page and upload your ZIP archive using the form above.</p>
-
-                    <div style="background: var(--bg-secondary); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                        <p style="margin: 0; color: var(--text-secondary);">1. Use the drag & drop area above to select your ZIP file</p>
-                        <p style="margin: 5px 0 0 0; color: var(--text-secondary);">2. Click "Analyze Java Versions" to upload and process</p>
-                        <p style="margin: 5px 0 0 0; color: var(--text-secondary);">3. Review the analysis results</p>
-                    </div>
-
-                    <h4 style="color: var(--text-link); margin: 15px 0 10px 0; font-size: 1.1em;">Best Practices:</h4>
-                    <div style="background: var(--bg-tertiary); padding: 15px; border-radius: 8px; border-left: 4px solid var(--color-primary);">
-                        <p style="margin: 0 0 10px 0; color: var(--text-secondary);">• Include server/environment information in filenames</p>
-                        <p style="margin: 0 0 10px 0; color: var(--text-secondary);">• Keep archives under 100MB for optimal processing</p>
-                        <p style="margin: 0 0 10px 0; color: var(--text-secondary);">• Document the collection date and scope</p>
-                        <p style="margin: 0; color: var(--text-secondary);">• Store archives for compliance and historical analysis</p>
-                    </div>
-                </div>
-            </div>
         </div>
-    </div>
-</div>
+    </div> <!-- Close container -->
 
 <script>
     const uploadArea = document.getElementById('upload-area');
@@ -525,9 +893,202 @@ public class JavaRuntimeInfo {
     const uploadForm = document.getElementById('upload-form');
     const loading = document.getElementById('loading');
 
+    // Java Versions Data
+    const javaVersions = ['1.0', '1.0.1', '1.0.2', '1.0_alpha', '1.1', '1.1.1', '1.1.2', '1.1.3', '1.1.4', '1.1.5', '1.1.6', '1.1.6_004', '1.1.6_005', '1.1.6_006', '1.1.6_007', '1.1.6_008', '1.1.6_009', '1.1.7', '1.1.7A', '1.1.7B', '1.1.8', '1.1.8_001', '1.1.8_002', '1.1.8_003', '1.1.8_004', '1.1.8_005', '1.1.8_006', '1.1.8_007', '1.1.8_008', '1.1.8_009', '1.1.8_010', '1.1.8_11', '1.1.8_12', '1.1.8_13', '1.2.0', '1.2.1', '1.2.2', '1.2.2_001', '1.2.2_002', '1.2.2_003', '1.2.2_004', '1.2.2_005', '1.2.2_006', '1.2.2_007', '1.2.2_008', '1.2.2_009', '1.2.2_010', '1.2.2_011', '1.2.2_012', '1.2.2_013', '1.2.2_014', '1.2.2_015', '1.2.2_016', '1.2.2_017', '1.2.2_018', '1.2.2_05', '1.2.2_05a', '1.2.2_06', '1.2.2_07', '1.2.2_08', '1.2.2_09', '1.2.2_10', '1.2.2_11', '1.2.2_12', '1.2.2_13', '1.2.2_14', '1.2.2_15', '1.2.2_16', '1.2.2_17', '1.2.2_18', '1.3.0', '1.3.0_01', '1.3.0_02', '1.3.0_03', '1.3.0_04', '1.3.0_05', '1.3.1', '1.3.1_01', '1.3.1_01a', '1.3.1_02', '1.3.1_03', '1.3.1_04', '1.3.1_05', '1.3.1_06', '1.3.1_07', '1.3.1_08', '1.3.1_09', '1.3.1_10', '1.3.1_11', '1.3.1_12', '1.3.1_13', '1.3.1_14', '1.3.1_15', '1.3.1_16', '1.3.1_17', '1.3.1_18', '1.3.1_19', '1.3.1_20', '1.3.1_21', '1.3.1_22', '1.3.1_23', '1.3.1_24', '1.3.1_25', '1.3.1_26', '1.3.1_27', '1.3.1_28', '1.3.1_29', '1.3.1_31', '1.3.1_32', '1.4.0', '1.4.0_01', '1.4.0_01a', '1.4.0_02', '1.4.0_03', '1.4.0_04', '1.4.1', '1.4.1_01', '1.4.1_01a', '1.4.1_02', '1.4.1_03', '1.4.1_04', '1.4.1_05', '1.4.1_06', '1.4.1_07', '1.4.2', '1.4.2_01', '1.4.2_02', '1.4.2_03', '1.4.2_04', '1.4.2_05', '1.4.2_06', '1.4.2_07', '1.4.2_08', '1.4.2_09', '1.4.2_10', '1.4.2_11', '1.4.2_12', '1.4.2_13', '1.4.2_14', '1.4.2_15', '1.4.2_16', '1.4.2_17', '1.4.2_18', '1.4.2_19', '1.4.2_20', '1.4.2_21', '1.4.2_22', '1.4.2_23', '1.4.2_24', '1.4.2_25', '1.4.2_26', '1.4.2_27', '1.4.2_28', '1.4.2_29', '1.4.2_30', '1.4.2_31', '1.4.2_32', '1.4.2_33', '1.4.2_34', '1.4.2_35', '1.4.2_36', '1.4.2_37', '1.4.2_38', '1.4.2_40', '1.4.2_41', '1.4.2_42', '10', '10.0.1', '10.0.2', '11', '11.0.1', '11.0.10', '11.0.11', '11.0.12', '11.0.13', '11.0.14', '11.0.15', '11.0.15.1', '11.0.16', '11.0.16.1', '11.0.17', '11.0.18', '11.0.19', '11.0.2', '11.0.20', '11.0.21', '11.0.22', '11.0.23', '11.0.24', '11.0.25', '11.0.26', '11.0.27', '11.0.28', '11.0.29', '11.0.3', '11.0.30', '11.0.4', '11.0.5', '11.0.6', '11.0.7', '11.0.8', '11.0.9', '12', '12.0.1', '12.0.2', '13', '13.0.1', '13.0.2', '14', '14.0.1', '14.0.2', '15', '15.0.1', '15.0.2', '16', '16.0.1', '16.0.2', '17', '17.0.1', '17.0.10', '17.0.11', '17.0.12', '17.0.13', '17.0.14', '17.0.15', '17.0.16', '17.0.17', '17.0.18', '17.0.2', '17.0.3', '17.0.3.1', '17.0.4', '17.0.4.1', '17.0.5', '17.0.6', '17.0.7', '17.0.8', '17.0.9', '18', '18.0.1', '18.0.1.1', '18.0.2', '18.0.2.1', '19', '19.0.1', '19.0.2', '20', '20.0.1', '20.0.2', '21', '21.0.1', '21.0.10', '21.0.2', '21.0.3', '21.0.4', '21.0.5', '21.0.6', '21.0.7', '21.0.8', '21.0.9', '22', '22.0.1', '22.0.2', '23', '23.0.1', '23.0.2', '24', '24.0.1', '24.0.2', '25', '25.0.1', '25.0.2', '5.0', '5.0u1', '5.0u10', '5.0u11', '5.0u12', '5.0u13', '5.0u14', '5.0u15', '5.0u16', '5.0u17', '5.0u18', '5.0u19', '5.0u2', '5.0u20', '5.0u21', '5.0u22', '5.0u23', '5.0u24', '5.0u25', '5.0u26', '5.0u27', '5.0u28', '5.0u29', '5.0u3', '5.0u30', '5.0u31', '5.0u32', '5.0u33', '5.0u34', '5.0u35', '5.0u36', '5.0u38', '5.0u39', '5.0u4', '5.0u40', '5.0u41', '5.0u45', '5.0u5', '5.0u51', '5.0u55', '5.0u6', '5.0u61', '5.0u65', '5.0u7', '5.0u71', '5.0u75', '5.0u8', '5.0u81', '5.0u85', '5.0u9', '6', '6u1', '6u10', '6u101', '6u105', '6u11', '6u111', '6u113', '6u115', '6u12', '6u121', '6u13', '6u131', '6u14', '6u141', '6u14p', '6u15', '6u151', '6u16', '6u161', '6u17', '6u171', '6u18', '6u181', '6u19', '6u191', '6u2', '6u20', '6u201', '6u21', '6u211', '6u21p', '6u22', '6u22m', '6u23', '6u24', '6u25', '6u26', '6u27', '6u29', '6u3', '6u30', '6u31', '6u32', '6u33', '6u34', '6u35', '6u37', '6u38', '6u39', '6u4', '6u41', '6u43', '6u45', '6u4p', '6u5', '6u51', '6u5p', '6u6', '6u60', '6u65', '6u6p', '6u7', '6u71', '6u75', '6u81', '6u85', '6u91', '6u95', '7', '7u1', '7u10', '7u101', '7u11', '7u111', '7u121', '7u13', '7u131', '7u141', '7u15', '7u151', '7u161', '7u17', '7u171', '7u181', '7u191', '7u2', '7u201', '7u21', '7u211', '7u221', '7u231', '7u241', '7u25', '7u251', '7u261', '7u271', '7u281', '7u291', '7u3', '7u301', '7u311', '7u321', '7u331', '7u341', '7u343', '7u351', '7u4', '7u40', '7u45', '7u5', '7u51', '7u55', '7u6', '7u60', '7u65', '7u67', '7u7', '7u71', '7u72', '7u75', '7u76', '7u79', '7u80', '7u85', '7u9', '7u91', '7u95', '7u97', '7u99', '8', '8u101', '8u102', '8u11', '8u111', '8u112', '8u121', '8u131', '8u141', '8u144', '8u151', '8u152', '8u161', '8u162', '8u171', '8u172', '8u181', '8u191', '8u192', '8u20', '8u201', '8u202', '8u211', '8u212', '8u221', '8u231', '8u241', '8u25', '8u251', '8u261', '8u271', '8u281', '8u291', '8u301', '8u31', '8u311', '8u321', '8u331', '8u333', '8u341', '8u351', '8u361', '8u371', '8u381', '8u391', '8u40', '8u401', '8u411', '8u421', '8u431', '8u441', '8u45', '8u451', '8u461', '8u471', '8u481', '8u5', '8u51', '8u60', '8u65', '8u66', '8u71', '8u72', '8u73', '8u74', '8u77', '8u91', '8u92', '9', '9.0.1', '9.0.4'];
+
     // Click to upload
     uploadArea.addEventListener('click', () => {
         fileInput.click();
+    });
+
+    // Combobox Implementation
+    const versionSearch = document.getElementById('version-search');
+    const versionDropdown = document.getElementById('version-dropdown');
+    const analyzeQuickBtn = document.getElementById('analyze-quick-btn');
+    const quickSelectionInfo = document.getElementById('quick-selection-info');
+    const selectedVersionDisplay = document.getElementById('selected-version-display');
+    let selectedVersions = new Set();
+
+    function renderDropdown(filter = '') {
+        versionDropdown.innerHTML = '';
+        const filtered = javaVersions.filter(v => v.toLowerCase().includes(filter.toLowerCase()));
+        
+        if (filtered.length === 0) {
+            versionDropdown.innerHTML = '<div class="combobox-item" style="color: var(--text-muted); justify-content: center; padding: 20px;">No versions found</div>';
+            return;
+        }
+
+        // Group by major version
+        const groups = new Map();
+        filtered.forEach(v => {
+            let major = 'Other';
+            if (v.startsWith('1.')) {
+                // For 1.x versions like 1.8, extract the minor version as major
+                const match = v.match(/^1\.(\d+)/);
+                if (match) major = 'Java ' + match[1];
+            } else if (v.match(/^(\d+)($|[u.])/)) {
+                // For versions like 8, 8u101, 11.0.1 - extract just the major number
+                const match = v.match(/^(\d+)/);
+                if (match) major = 'Java ' + match[1];
+            }
+            if (!groups[major]) groups[major] = [];
+            groups[major].push(v);
+        });
+
+        // Sort groups (reverse numeric for Java 17, 11 etc first)
+        const sortedGroups = Object.keys(groups).sort((a, b) => {
+            const getNum = s => parseInt(s.replace('Java ', '')) || 0;
+            return getNum(b) - getNum(a);
+        });
+
+        sortedGroups.forEach(group => {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'combobox-group';
+            groupDiv.textContent = group;
+            versionDropdown.appendChild(groupDiv);
+
+            groups[group].forEach(v => {
+                const item = document.createElement('div');
+                item.className = 'combobox-item';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = selectedVersions.has(v);
+                checkbox.onclick = (e) => e.stopPropagation();
+                checkbox.onchange = () => toggleVersion(v);
+                
+                const label = document.createElement('span');
+                label.textContent = v;
+                
+                item.appendChild(checkbox);
+                item.appendChild(label);
+
+                item.onclick = (e) => {
+                    e.stopPropagation();
+                    toggleVersion(v);
+                    checkbox.checked = selectedVersions.has(v);
+                };
+                versionDropdown.appendChild(item);
+            });
+        });
+    }
+
+    function toggleVersion(v) {
+        if (selectedVersions.has(v)) {
+            selectedVersions.delete(v);
+        } else {
+            selectedVersions.add(v);
+        }
+        updateSelectedDisplay();
+        renderDropdown(versionSearch.value);
+        // Keep dropdown open after selection
+        versionDropdown.classList.add('show');
+    }
+
+    function removeVersion(v) {
+        selectedVersions.delete(v);
+        updateSelectedDisplay();
+        renderDropdown(versionSearch.value);
+    }
+
+    function updateSelectedDisplay() {
+        const chipsContainer = document.getElementById('chips-container');
+        chipsContainer.innerHTML = '';
+
+        Array.from(selectedVersions).forEach(version => {
+            const chip = document.createElement('div');
+            chip.className = 'selected-chip';
+
+            const versionText = document.createElement('span');
+            versionText.textContent = version;
+
+            const removeBtn = document.createElement('span');
+            removeBtn.className = 'chip-remove';
+            removeBtn.textContent = '×';
+            removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                removeVersion(version);
+            });
+
+            chip.appendChild(versionText);
+            chip.appendChild(removeBtn);
+            chipsContainer.appendChild(chip);
+        });
+    }
+
+    const comboboxWrapper = document.getElementById('combobox-wrapper');
+
+    versionSearch.addEventListener('input', (e) => {
+        renderDropdown(e.target.value);
+        versionDropdown.classList.add('show');
+    });
+
+    versionSearch.addEventListener('focus', () => {
+        renderDropdown(versionSearch.value);
+        versionDropdown.classList.add('show');
+    });
+
+    // Show dropdown when clicking anywhere in the combobox wrapper
+    comboboxWrapper.addEventListener('click', (e) => {
+        // Don't open if clicking the remove button on a chip
+        if (!e.target.classList.contains('chip-remove')) {
+            versionSearch.focus();
+            renderDropdown(versionSearch.value);
+            versionDropdown.classList.add('show');
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        const comboContainer = document.querySelector('.combobox-container');
+        if (comboContainer && !comboContainer.contains(e.target)) {
+            versionDropdown.classList.remove('show');
+        }
+    });
+
+    analyzeQuickBtn.addEventListener('click', () => {
+        if (selectedVersions.size === 0) {
+            alert('Please select at least one version first');
+            return;
+        }
+        alert('Analysis for ' + Array.from(selectedVersions).join(', ') + ' is not implemented yet in this frontend-only demo.');
+    });
+
+    // List of Versions Implementation
+    const versionListInput = document.getElementById('version-list-input');
+    const versionListDropZone = document.getElementById('version-list-drop-zone');
+    const analyzeListBtn = document.getElementById('analyze-list-btn');
+
+    versionListDropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        versionListDropZone.classList.add('dragover');
+    });
+
+    versionListDropZone.addEventListener('dragleave', () => {
+        versionListDropZone.classList.remove('dragover');
+    });
+
+    versionListDropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        versionListDropZone.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                versionListInput.value = event.target.result;
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    analyzeListBtn.addEventListener('click', () => {
+        const content = versionListInput.value.trim();
+        if (!content) {
+            alert('Please enter or upload a list of versions first');
+            return;
+        }
+        const count = content.split('\n').filter(l => l.trim()).length;
+        alert('Analysis for ' + count + ' versions is not implemented yet in this frontend-only demo.');
     });
 
     // Drag and drop
@@ -647,6 +1208,33 @@ public class JavaRuntimeInfo {
             section.classList.add('expanded');
             toggleBtn.classList.remove('collapsed');
             toggleBtn.textContent = '▲';
+        }
+    }
+
+    // Tab switching logic
+    function switchTab(tabId) {
+        // Update buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('onclick').includes(tabId)) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Update content
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(tabId).classList.add('active');
+
+        // Update subtitle contextually
+        const subtitle = document.getElementById('page-subtitle');
+        if (tabId === 'quick-tab') {
+            subtitle.textContent = 'Select a pre-defined Java version for quick analysis';
+        } else if (tabId === 'list-tab') {
+            subtitle.textContent = 'Enter or upload a list of Java versions for bulk analysis';
+        } else if (tabId === 'audit-tab') {
+            subtitle.textContent = 'Upload a ZIP archive or a properties file for detailed analysis';
         }
     }
 </script>

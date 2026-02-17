@@ -2,7 +2,14 @@
 
 **Closing the intent-to-code chasm**
 
+[GitHub](https://github.com/intent-integrity-chain/kit) | [npm: iikit-kanban](https://www.npmjs.com/package/iikit-kanban)
+
 A complete specification-driven development workflow for AI coding assistants with cryptographic verification.
+
+## What's New in v1.2.0
+
+- **Live kanban dashboard**: The implement skill (`/iikit-08-implement`) now automatically launches a browser-based kanban board via `npx iikit-kanban`. Watch user stories move through Todo / In Progress / Done columns as the AI agent checks off tasks in real time. Dark/light theme, collapsible task lists, integrity badges. Gracefully skips if Node.js is not available.
+- **Git hooks** (v1.1.0): Pre-commit blocks tampered assertions. Post-commit stores hashes as tamper-resistant git notes. Defense-in-depth with dual-layer verification.
 
 ## Overview
 
@@ -28,6 +35,7 @@ Intent Integrity Kit (IIKit) preserves your intent from idea to implementation. 
 
 - **Intent Preservation**: Traces intent from idea through spec, test, and code
 - **Assertion Integrity**: SHA256 hashing prevents test tampering during implementation
+- **Git Hook Enforcement**: Pre-commit and post-commit hooks enforce assertion integrity agent-agnostically — works with Claude Code, Codex, Copilot, Gemini, and any other agent because git triggers them, not the agent
 - **Phase Separation**: Strict boundaries between governance, requirements, and implementation
 - **Constitution Enforcement**: All skills validate against project principles
 - **TDD Support**: Generate test specs before implementation with tamper detection
@@ -78,4 +86,6 @@ tessl install tessl-labs/intent-integrity-kit
 
 ## Learn More
 
+- [Intent Integrity Kit on GitHub](https://github.com/intent-integrity-chain/kit) - Source code, issues, and contributions
+- [IIKit Kanban Board](https://github.com/intent-integrity-chain/iikit-kanban) - Live dashboard source code
 - [Intent Integrity Chain](https://github.com/jbaruch/intent-integrity-chain) - The methodology behind IIKit
