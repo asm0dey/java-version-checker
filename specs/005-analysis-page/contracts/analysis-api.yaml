@@ -1,0 +1,219 @@
+openapi: 3.0.3
+info:
+  title: Java Version Checker - Analysis Page API
+  description: API endpoints for the Analysis Page feature
+  version: 1.0.0
+  contact:
+    name: Java Version Checker
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /analysis:
+    get:
+      summary: Display analysis results page
+      description: |
+        Renders the analysis page with blurred preview of Java version analysis results.
+        Requires valid session data from prior upload. Shows assessment form overlay.
+      operationId: getAnalysisPage
+      tags:
+        - Analysis
+      responses:
+        '200':
+          description: Analysis page rendered successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: |
+                  <!DOCTYPE html>
+                  <html>
+                    <!-- Qute template with blurred results table and assessment form -->
+                  </html>
+        '302':
+          description: Redirect to index page (missing or expired session)
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /?error=session_expired
+        '500':
+          description: Server error rendering page
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /analysis/submit:
+    post:
+      summary: Submit assessment form to reveal results
+      description: |
+        Accepts user contact information (email, company name, optional role).
+        Validates input and returns success/error. Does NOT persist data to database.
+        On success, client-side JavaScript removes blur from results table.
+      operationId: submitAssessmentForm
+      tags:
+        - Analysis
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AnalysisFormData'
+            examples:
+              validSubmission:
+                summary: Valid form submission
+                value:
+                  email: user@example.com
+                  companyName: Acme Corporation
+                  role: CTO
+              minimalSubmission:
+                summary: Minimal valid submission (no role)
+                value:
+                  email: developer@startup.io
+                  companyName: My Startup Inc
+      responses:
+        '200':
+          description: Form submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitResponse'
+              examples:
+                success:
+                  summary: Successful submission
+                  value:
+                    success: true
+                    message: "Assessment submitted successfully"
+        '400':
+          description: Validation errors in form data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                invalidEmail:
+                  summary: Invalid email format
+                  value:
+                    success: false
+                    errors:
+                      email: "Invalid email format"
+                missingFields:
+                  summary: Missing required fields
+                  value:
+                    success: false
+                    errors:
+                      email: "Email is required"
+                      companyName: "Company name is required"
+        '500':
+          description: Server error processing submission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitResponse'
+              examples:
+                serverError:
+                  summary: Internal server error
+                  value:
+                    success: false
+                    message: "An error occurred processing your submission"
+
+components:
+  schemas:
+    AnalysisFormData:
+      type: object
+      required:
+        - email
+        - companyName
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: user@example.com
+          pattern: '^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$'
+        companyName:
+          type: string
+          minLength: 1
+          description: Company or organization name
+          example: Acme Corporation
+        role:
+          type: string
+          nullable: true
+          description: User's role or title (optional)
+          example: CTO
+
+    SubmitResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the submission was successful
+          example: true
+        message:
+          type: string
+          description: Human-readable status message
+          example: "Assessment submitted successfully"
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Always false for validation errors
+          example: false
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+          description: Map of field names to error messages
+          example:
+            email: "Invalid email format"
+            companyName: "Company name is required"
+
+    JavaVersionInfo:
+      type: object
+      description: Analysis result for a single Java version (existing entity, for reference only)
+      properties:
+        version:
+          type: string
+          description: Java version string
+          example: "17.0.13"
+        vendor:
+          type: string
+          description: Detected vendor
+          example: "Oracle"
+        licenseType:
+          type: string
+          description: License tag
+          example: "NFTC"
+        licenseExplanation:
+          type: string
+          description: Human-readable license description
+          example: "No-Fee Terms and Conditions (free use incl. production, within the allowed window)."
+        licenseSource:
+          type: string
+          description: Source URL or reference
+          example: "Oracle +1"
+        requiresCommercialLicense:
+          type: boolean
+          description: True if paid license needed for production
+          example: false
+        endOfLife:
+          type: string
+          description: EOL date (ISO format or descriptive)
+          example: "Sep 2028"
+        recommendation:
+          type: string
+          enum:
+            - "Keep as is"
+            - "Migration recommended"
+            - "Migration required"
+            - "License required"
+          description: Recommended action
+          example: "Keep as is"
+
+tags:
+  - name: Analysis
+    description: Analysis page endpoints for displaying and unlocking results

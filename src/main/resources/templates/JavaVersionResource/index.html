@@ -1106,12 +1106,42 @@ public class JavaRuntimeInfo {
         }
     });
 
-    analyzeQuickBtn.addEventListener('click', () => {
+    analyzeQuickBtn.addEventListener('click', async () => {
         if (selectedVersions.size === 0) {
             alert('Please select at least one version first');
             return;
         }
-        alert('Analysis for ' + Array.from(selectedVersions).join(', ') + ' is not implemented yet in this frontend-only demo.');
+
+        const versionsArray = Array.from(selectedVersions);
+        analyzeQuickBtn.disabled = true;
+        analyzeQuickBtn.textContent = 'Analyzing...';
+
+        try {
+            const response = await fetch('/analyze/quick', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(versionsArray)
+            });
+
+            if (response.ok) {
+                const analysisData = await response.json();
+                // Store data in localStorage and redirect
+                localStorage.setItem('analysisData', JSON.stringify(analysisData));
+                window.location.href = '/analysis';
+            } else {
+                const error = await response.json();
+                alert(error.error || 'Failed to analyze versions. Please try again.');
+                analyzeQuickBtn.disabled = false;
+                analyzeQuickBtn.textContent = 'Next ➤';
+            }
+        } catch (error) {
+            console.error('Error analyzing versions:', error);
+            alert('An error occurred. Please try again.');
+            analyzeQuickBtn.disabled = false;
+            analyzeQuickBtn.textContent = 'Next ➤';
+        }
     });
 
     // List of Versions Implementation
@@ -1142,14 +1172,45 @@ public class JavaRuntimeInfo {
         }
     });
 
-    analyzeListBtn.addEventListener('click', () => {
+    analyzeListBtn.addEventListener('click', async () => {
         const content = versionListInput.value.trim();
         if (!content) {
             alert('Please enter or upload a list of versions first');
             return;
         }
-        const count = content.split('\n').filter(l => l.trim()).length;
-        alert('Analysis for ' + count + ' versions is not implemented yet in this frontend-only demo.');
+
+        analyzeListBtn.disabled = true;
+        analyzeListBtn.textContent = 'Analyzing...';
+
+        try {
+            const formData = new URLSearchParams();
+            formData.append('versions', content);
+
+            const response = await fetch('/analyze/list', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: formData.toString()
+            });
+
+            if (response.ok) {
+                const analysisData = await response.json();
+                // Store data in localStorage and redirect
+                localStorage.setItem('analysisData', JSON.stringify(analysisData));
+                window.location.href = '/analysis';
+            } else {
+                const error = await response.json();
+                alert(error.error || 'Failed to analyze versions. Please try again.');
+                analyzeListBtn.disabled = false;
+                analyzeListBtn.textContent = 'Analyze List';
+            }
+        } catch (error) {
+            console.error('Error analyzing versions:', error);
+            alert('An error occurred. Please try again.');
+            analyzeListBtn.disabled = false;
+            analyzeListBtn.textContent = 'Analyze List';
+        }
     });
 
     // Drag and drop

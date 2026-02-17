@@ -135,4 +135,56 @@ public class JavaVersionService {
             return JavaVersionInfo.VersionAge.VERY_OLD;
         }
     }
+
+    /**
+     * Generates fake preview data for blurred display before form submission.
+     * The fake data maintains the same row count as real data but with obscured values.
+     */
+    public static List<JavaVersionInfo> generateFakePreviewData(List<JavaVersionInfo> realData) {
+        return realData.stream()
+                .map(info -> new JavaVersionInfo(
+                        "XX.X.XX",
+                        "XX.X.XX-XXXX",
+                        "XX.X.XX-XXXX",
+                        "XXXX",
+                        "XXXX",
+                        "XXXX.properties",
+                        false,
+                        false,
+                        "XXXXXXXXXXXXXXXXXXXX",
+                        JavaVersionInfo.VersionAge.OK
+                ))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Sorts analysis results by recommendation severity:
+     * - Migration required (older than JDK 8)
+     * - License required (requires commercial license)
+     * - Migration recommended (old versions)
+     * - Keep as is (current versions)
+     */
+    public static List<JavaVersionInfo> sortByRecommendationSeverity(List<JavaVersionInfo> versions) {
+        return versions.stream()
+                .sorted((v1, v2) -> {
+                    // Priority 1: Migration required (older than JDK 8)
+                    if (v1.isOlderThanJdk8() != v2.isOlderThanJdk8()) {
+                        return v1.isOlderThanJdk8() ? -1 : 1;
+                    }
+
+                    // Priority 2: License required
+                    if (v1.requiresCommercialLicense() != v2.requiresCommercialLicense()) {
+                        return v1.requiresCommercialLicense() ? -1 : 1;
+                    }
+
+                    // Priority 3: Version age (OLD before OK)
+                    if (v1.versionAge() != v2.versionAge()) {
+                        return v1.versionAge().compareTo(v2.versionAge());
+                    }
+
+                    // Fallback: alphabetical by version
+                    return v1.javaVersion().compareTo(v2.javaVersion());
+                })
+                .collect(Collectors.toList());
+    }
 }

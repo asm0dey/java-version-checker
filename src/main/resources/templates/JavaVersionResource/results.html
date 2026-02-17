@@ -473,9 +473,41 @@
             {/if}
 
             <div style="text-align: center; margin-top: 40px;">
+                <a href="#" id="view-analysis-btn" class="back-btn" style="margin-right: 20px;">📊 View Analysis Results</a>
                 <a href="/" class="back-btn">📤 Upload Another File</a>
             </div>
         </div>
     </div>
+
+    <script>
+        // Store analysis data in localStorage before navigating to analysis page
+        document.getElementById('view-analysis-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Collect all version data from the table - data injected by Qute
+            const analysisData = [
+            {#for version in versions}
+                \{
+                    javaVersion: '{version.javaVersion ?: "N/A"}',
+                    javaRuntimeVersion: '{version.javaRuntimeVersion ?: "N/A"}',
+                    javaVmVersion: '{version.javaVmVersion ?: "N/A"}',
+                    javaVendor: '{version.javaVendor ?: "N/A"}',
+                    javaVmVendor: '{version.javaVmVendor ?: "N/A"}',
+                    fileName: '{version.fileName ?: "N/A"}',
+                    isOlderThanJdk8: {version.isOlderThanJdk8},
+                    requiresCommercialLicense: {version.requiresCommercialLicense},
+                    licenseExplanation: '{version.licenseExplanation ?: "N/A"}',
+                    versionAge: '{version.versionAge.name()}'
+                }{#if version_hasNext},{/if}
+            {/for}
+            ];
+
+            // Store in localStorage
+            localStorage.setItem('analysisData', JSON.stringify(analysisData));
+
+            // Navigate to analysis page
+            window.location.href = '/analysis';
+        });
+    </script>
 </body>
 </html>
