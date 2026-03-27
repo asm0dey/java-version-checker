@@ -53,8 +53,8 @@ public class JavaVersionResource {
     @POST
     @Path("/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance upload(@FormParam("file") FileUpload fileUpload) throws IOException {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response upload(@FormParam("file") FileUpload fileUpload) throws IOException {
         List<JavaVersionInfo> allVersions;
         String fileName = fileUpload.fileName();
 
@@ -73,24 +73,24 @@ public class JavaVersionResource {
                 }
             }
         } catch (ZipBombException e) {
-            throw new BadRequestException("Zip bomb detected: " + e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\": \"Zip bomb detected: " + e.getMessage() + "\"}")
+                    .build();
         }
 
         List<JavaVersionInfo> distinctVersions = JavaVersionService.getDistinctVersions(allVersions);
 
         // Validate that we have at least one valid version (FR-015)
         if (distinctVersions.isEmpty()) {
-            throw new BadRequestException("No valid Java version information found. Please upload a file containing at least one valid Java runtime properties file.");
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\": \"No valid Java version information found. Please upload a file containing at least one valid Java runtime properties file.\"}")
+                    .build();
         }
 
         // Sort by recommendation severity
         List<JavaVersionInfo> sortedVersions = JavaVersionService.sortByRecommendationSeverity(distinctVersions);
 
-        // Calculate counts for summary
-        int outdatedCount = (int) distinctVersions.stream().filter(JavaVersionInfo::isOlderThanJdk8).count();
-        int paidCount = (int) distinctVersions.stream().filter(JavaVersionInfo::requiresCommercialLicense).count();
-
-        return Templates.results(sortedVersions, allVersions.size(), distinctVersions.size(), outdatedCount, paidCount);
+        return Response.ok(sortedVersions).build();
     }
 
     @GET

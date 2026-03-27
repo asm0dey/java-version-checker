@@ -125,7 +125,6 @@ public class JavaVersionService {
                 String[] parts = version.split("\\.");
                 majorVersion = Integer.parseInt(parts[0]);
             } else return JavaVersionInfo.VersionAge.VERY_OLD;
-
             // Apply traffic lights scheme
             if (majorVersion < 11) return JavaVersionInfo.VersionAge.VERY_OLD;
             else if (majorVersion <= 20) return JavaVersionInfo.VersionAge.OLD;

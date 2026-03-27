@@ -302,11 +302,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show real results container
         realContainer.classList.remove('hidden');
 
+        // Show PDF download button
+        if (window.PDFExport) {
+            PDFExport.init('pdf-download-btn');
+            PDFExport.setButtonVisibility('pdf-download-btn', true);
+        }
+
         // Smooth scroll to results
         realContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-        // Clear localStorage after successful reveal
-        localStorage.removeItem('analysisData');
+        // Note: We keep analysisData in localStorage for PDF generation
+        // It will be cleared when user navigates away or uploads new file
     }
 
     /**

@@ -1246,9 +1246,36 @@ public class JavaRuntimeInfo {
     }
 
     // Form submission
-    uploadForm.addEventListener('submit', () => {
+    uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
         submitBtn.style.display = 'none';
         loading.style.display = 'block';
+
+        const formData = new FormData(uploadForm);
+
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const analysisData = await response.json();
+                // Store data in localStorage and redirect to analysis page
+                localStorage.setItem('analysisData', JSON.stringify(analysisData));
+                window.location.href = '/analysis';
+            } else {
+                const error = await response.json();
+                alert(error.error || 'Failed to analyze file. Please try again.');
+                submitBtn.style.display = 'inline-block';
+                loading.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            alert('An error occurred. Please try again.');
+            submitBtn.style.display = 'inline-block';
+            loading.style.display = 'none';
+        }
     });
 
     // Copy Java code function

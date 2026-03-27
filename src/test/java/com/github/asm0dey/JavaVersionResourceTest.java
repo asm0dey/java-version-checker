@@ -34,8 +34,9 @@ public class JavaVersionResourceTest {
                 .post("/upload")
                 .then()
                 .statusCode(200)
-                .contentType(ContentType.HTML)
-                .body(containsString("Java Version Analysis Results"));
+                .contentType(ContentType.JSON)
+                .body("$", instanceOf(java.util.List.class))
+                .body("size()", greaterThan(0));
     }
 
     @Test
@@ -75,10 +76,11 @@ public class JavaVersionResourceTest {
                 .post("/upload")
                 .then()
                 .statusCode(200)
-                .contentType(ContentType.HTML)
-                .body(containsString("Java Version Analysis Results"))
-                .body(containsString("21.0.1"))
-                .body(containsString("Eclipse Adoptium"));
+                .contentType(ContentType.JSON)
+                .body("$", instanceOf(java.util.List.class))
+                .body("size()", equalTo(1))
+                .body("[0].javaVersion", equalTo("21.0.1"))
+                .body("[0].javaVendor", equalTo("Eclipse Adoptium"));
     }
 
     private byte[] createTestZipFile() throws IOException {

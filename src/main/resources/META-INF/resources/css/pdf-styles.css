@@ -1,0 +1,176 @@
+/**
+ * PDF Export Styles for Java Version Checker
+ * Styles for the floating download button and print optimization
+ */
+
+/* ============================================
+   FLOATING DOWNLOAD BUTTON
+   ============================================ */
+
+.pdf-download-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    font-size: 24px;
+}
+
+.pdf-download-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.pdf-download-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.pdf-download-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.pdf-download-btn:focus {
+    outline: 3px solid rgba(102, 126, 234, 0.4);
+    outline-offset: 2px;
+}
+
+/* Button tooltip */
+.pdf-download-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    right: 70px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.pdf-download-btn:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Small spinner for button loading state */
+.spinner-small {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   PRINT OPTIMIZATION
+   ============================================ */
+
+@media print {
+    /* Hide UI elements when printing the page */
+    .pdf-download-btn,
+    .theme-toggle,
+    .back-btn,
+    .modal-overlay {
+        display: none !important;
+    }
+
+    /* Ensure content is full width */
+    body {
+        background: white !important;
+        padding: 0 !important;
+    }
+
+    .container {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* Ensure tables don't break awkwardly */
+    tr {
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+}
+
+/* ============================================
+   THEME COMPATIBILITY
+   ============================================ */
+
+/* Ensure button is visible in all themes */
+.pdf-download-btn {
+    /* Override any theme variables that might affect visibility */
+    --bg-primary: transparent;
+    --text-primary: white;
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+    .pdf-download-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+        bottom: 16px;
+        right: 16px;
+    }
+
+    .pdf-download-btn::after {
+        display: none; /* Hide tooltip on mobile */
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .pdf-download-btn,
+    .pdf-download-btn::after,
+    .spinner-small {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .pdf-download-btn {
+        border: 2px solid currentColor;
+    }
+}
+
+/* Focus visible for keyboard navigation */
+.pdf-download-btn:focus-visible {
+    outline: 3px solid rgba(102, 126, 234, 0.6);
+    outline-offset: 3px;
+}

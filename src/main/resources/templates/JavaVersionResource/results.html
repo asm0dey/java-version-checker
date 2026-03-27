@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Java Version Analysis Results</title>
     <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/pdf-styles.css">
     <script src="/js/theme.js"></script>
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js" crossorigin="anonymous"></script>
+    <!-- PDF Export Module -->
+    <script src="/js/pdf-export.js"></script>
     <style>
         * {
             margin: 0;
@@ -366,6 +372,8 @@
     </style>
 </head>
 <body>
+    <!-- Debug: Verify JavaScript is running -->
+    <script>console.log('PAGE BODY SCRIPT EXECUTED');</script>
     <div class="theme-toggle">
         <select id="theme-selector" aria-label="Select theme">
             <option value="auto">🌓 Auto</option>
@@ -479,35 +487,60 @@
         </div>
     </div>
 
+    <!-- PDF Download Button -->
+    <button id="pdf-download-btn" class="pdf-download-btn"
+            aria-label="Download analysis results as PDF"
+            data-tooltip="Download PDF Report">
+        📄
+    </button>
+
     <script>
+        // Collect analysis data from server-side template and store in localStorage
+        const analysisData = [
+        {#for version in versions}
+            \{
+                javaVersion: '{version.javaVersion ?: "N/A"}',
+                javaRuntimeVersion: '{version.javaRuntimeVersion ?: "N/A"}',
+                javaVmVersion: '{version.javaVmVersion ?: "N/A"}',
+                javaVendor: '{version.javaVendor ?: "N/A"}',
+                javaVmVendor: '{version.javaVmVendor ?: "N/A"}',
+                fileName: '{version.fileName ?: "N/A"}',
+                isOlderThanJdk8: {version.isOlderThanJdk8},
+                requiresCommercialLicense: {version.requiresCommercialLicense},
+                licenseExplanation: '{version.licenseExplanation ?: "N/A"}',
+                versionAge: '{version.versionAge.name()}'
+            }{#if version_hasNext},{/if}
+        {/for}
+        ];
+
+        // Store analysis data in localStorage for PDF export
+        localStorage.setItem('analysisData', JSON.stringify(analysisData));
+
         // Store analysis data in localStorage before navigating to analysis page
         document.getElementById('view-analysis-btn').addEventListener('click', function(e) {
             e.preventDefault();
-
-            // Collect all version data from the table - data injected by Qute
-            const analysisData = [
-            {#for version in versions}
-                \{
-                    javaVersion: '{version.javaVersion ?: "N/A"}',
-                    javaRuntimeVersion: '{version.javaRuntimeVersion ?: "N/A"}',
-                    javaVmVersion: '{version.javaVmVersion ?: "N/A"}',
-                    javaVendor: '{version.javaVendor ?: "N/A"}',
-                    javaVmVendor: '{version.javaVmVendor ?: "N/A"}',
-                    fileName: '{version.fileName ?: "N/A"}',
-                    isOlderThanJdk8: {version.isOlderThanJdk8},
-                    requiresCommercialLicense: {version.requiresCommercialLicense},
-                    licenseExplanation: '{version.licenseExplanation ?: "N/A"}',
-                    versionAge: '{version.versionAge.name()}'
-                }{#if version_hasNext},{/if}
-            {/for}
-            ];
-
-            // Store in localStorage
-            localStorage.setItem('analysisData', JSON.stringify(analysisData));
-
             // Navigate to analysis page
             window.location.href = '/analysis';
         });
+
+        // Initialize PDF export module
+        function initPDFExport() {
+            console.log('[results.html] Initializing PDF export...');
+            if (window.PDFExport) {
+                console.log('[results.html] PDFExport found, calling init...');
+                PDFExport.init('pdf-download-btn');
+            } else {
+                console.warn('[results.html] PDFExport not found! Retrying in 100ms...');
+                setTimeout(initPDFExport, 100);
+            }
+        }
+
+        // Wait for DOM and scripts to load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initPDFExport);
+        } else {
+            initPDFExport();
+        }
     </script>
 </body>
 </html>

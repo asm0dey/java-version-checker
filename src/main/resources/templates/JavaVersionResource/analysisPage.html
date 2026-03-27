@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Java Version Analysis Results</title>
     <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/pdf-styles.css">
     <script src="/js/theme.js"></script>
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js" crossorigin="anonymous"></script>
+    <!-- PDF Export Module -->
     <script src="/js/analysis.js" defer></script>
     <style>
         * {
@@ -473,5 +478,25 @@
             </div>
         </div>
     </div>
+
+    <!-- PDF Download Button -->
+    <button id="pdf-download-btn" class="pdf-download-btn" 
+            aria-label="Download analysis results as PDF"
+            data-tooltip="Download PDF Report"
+            style="display: none;">
+        📄
+    </button>
+
+    <!-- PDF Export Module -->
+    <script src="/js/pdf-export.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // PDF button visibility will be controlled by analysis.js when data is revealed
+            if (window.PDFExport) {
+                // Initially hidden until analysis is revealed
+                PDFExport.setButtonVisibility('pdf-download-btn', false);
+            }
+        });
+    </script>
 </body>
 </html>
